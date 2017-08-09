@@ -9,13 +9,12 @@ class Macro {
 	public static function buildManager() {
 		return BuildCache.getType('localize.Manager', function(ctx:BuildContext) {
 			var name = ctx.name;
-			var localeType = ctx.type;
-			var localeCt = localeType.toComplex();
+			var localeCt = ctx.type.toComplex();
 			var dataCt = macro:localize.Data<$localeCt>;
 			
 			var def = macro class $name extends localize.Manager.ManagerBase<$localeCt, $dataCt> {
 				override function createLocale(data:$dataCt):$localeCt {
-					return new localize.Localizer<$localeCt, $dataCt>(data, template);
+					return new localize.Localizer<$localeCt>(data, template);
 				}
 			}
 			def.pack = ['localize'];
@@ -24,19 +23,19 @@ class Macro {
 	}
 	
 	public static function buildLocalizer() {
-		return BuildCache.getType2('localize.Localizer', function(ctx:BuildContext2) {
+		return BuildCache.getType('localize.Localizer', function(ctx:BuildContext) {
 			var name = ctx.name;
+			var localeCt = ctx.type.toComplex();
 			var localeTp = switch ctx.type {
 				case TInst(cls, _) if(cls.get().isInterface):
-					switch ctx.type.toComplex() {
+					switch localeCt {
 						case TPath(tp): tp;
 						default: throw 'assert';
 					}
 				default:
 					 throw ctx.type.getID() + ' show be an interface';
 			}
-			var dataType = ctx.type2;
-			var dataCt = dataType.toComplex();
+			var dataCt = macro:localize.Data<$localeCt>;
 			
 			var def = macro class $name extends localize.Localizer.LocalizerBase<$dataCt> implements $localeTp {}
 			def.fields = getLocaleFields(ctx.type);
@@ -91,7 +90,7 @@ class Macro {
 		}
 	}
 	
-	static function getLocaleFields(type:Type)
+	static function getLocaleFields(type:Type):Array<Field>
 		return switch type {
 			case TInst(_.get() => cls, _) if(cls.isInterface):
 				var fields:Array<Field> = [];

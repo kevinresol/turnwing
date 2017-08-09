@@ -1,7 +1,7 @@
 package localize;
 
 @:genericBuild(localize.Macro.buildLocalizer())
-class Localizer<Locale, Data> {}
+class Localizer<Locale> {}
 
 class LocalizerBase<Data> {
 	var __data__:Data;
