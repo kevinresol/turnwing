@@ -1,0 +1,5 @@
+# @install: lix --silent download "https://github.com/HaxeFoundation/hxnodejs/archive/046fd0362ed1d5fd516db5e631a9eaa6d25f37b9.tar.gz" into hxnodejs/6.9.0/github/046fd0362ed1d5fd516db5e631a9eaa6d25f37b9
+-D hxnodejs=6.9.0
+-cp ${HAXESHIM_LIBCACHE}/hxnodejs/6.9.0/github/046fd0362ed1d5fd516db5e631a9eaa6d25f37b9/src
+--macro allowPackage('sys')
+--macro _hxnodejs.InitMacro.include()
