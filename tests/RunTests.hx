@@ -40,7 +40,7 @@ class LocalizerTest {
 		return Noise;
 	}
 	
-	public function test() {
+	public function localize() {
 		var loc = new Manager<MyLocale>(new JsonProvider(reader), template);
 		return loc.prepare(['en'])
 			.next(function(o) return assert(loc.language('en').hello('World') == 'Hello, World!'));
@@ -48,11 +48,13 @@ class LocalizerTest {
 	
 	public function noData() {
 		var loc = new Manager<MyLocale>(new JsonProvider(reader), template);
-		return loc.prepare(['dummy']).map(function(o) return assert(!o.isSuccess()));
+		return loc.prepare(['dummy'])
+			.map(function(o) return assert(!o.isSuccess()));
 	}
 	
 	public function invalid() {
 		var loc = new Manager<InvalidLocale>(new JsonProvider(reader), template);
-		return loc.prepare(['en']).map(function(o) return assert(!o.isSuccess()));
+		return loc.prepare(['en'])
+			.map(function(o) return assert(!o.isSuccess()));
 	}
 }
