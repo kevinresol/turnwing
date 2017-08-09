@@ -1,9 +1,29 @@
 # Hackable localization library for Haxe
 
-**Goals:**
+## What?
 
-- Type safe
-- Hackable (plug in different implementations at various part of the library)
+### Type safety
+
+Translation are done with interfaces. You will never mis-spell the translation key anymore.
+
+```haxe
+// no more string keys and dynamic parameters:
+loc.translate('hello', {name: 'World'});
+
+// use function calls with typed parameters instead
+loc.hello('World');
+```
+
+### Piece of mind
+
+Data are validated when they are loaded. Combining with type-safety, you can be sure that the translation calls will not fail.
+
+For example, if our `Locale` contains a translation function named `hello`.
+Then the `Provider` will ensure there is a localization string named `hello` when the data is loaded at runtime, not when the data is used (i.e. when `hello()` is called).
+
+### Hackable
+
+Users can plug in different implementations at various part of the library. May it be a `XmlProvider` that parses XML into localization data, or a `ErazorTemplate` that uses another templating engine under the hood.
 
 ## Usage
 
