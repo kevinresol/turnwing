@@ -12,6 +12,6 @@ class FileReader implements StringReader {
 		this.folder = folder.absolutePath();
 		
 	public function read(language:String):Promise<String>
-		return '$folder/$language.json'.getContent();
+		return Error.catchExceptions(function() return '$folder/$language.json'.getContent());
 }
 

@@ -23,15 +23,36 @@ interface MyLocale {
 	function hello(name:String):String;
 }
 
+interface InvalidLocale {
+	function foo(name:String):String;
+}
+
 class LocalizerTest {
-	public function new() {};
+	var reader:StringReader;
+	var template:Template;
+	
+	public function new() {}
+	
+	@:before
+	public function before() {
+		reader = new FileReader('./tests/data');
+		template = new HaxeTemplate();
+		return Noise;
+	}
 	
 	public function test() {
-		var reader = new FileReader('./tests/data');
-		var provider = new JsonProvider(reader);
-		var template = new HaxeTemplate();
-		var loc = new Manager<MyLocale>(provider, template);
+		var loc = new Manager<MyLocale>(new JsonProvider(reader), template);
 		return loc.prepare(['en'])
 			.next(function(o) return assert(loc.language('en').hello('World') == 'Hello, World!'));
+	}
+	
+	public function noData() {
+		var loc = new Manager<MyLocale>(new JsonProvider(reader), template);
+		return loc.prepare(['dummy']).map(function(o) return assert(!o.isSuccess()));
+	}
+	
+	public function invalid() {
+		var loc = new Manager<InvalidLocale>(new JsonProvider(reader), template);
+		return loc.prepare(['en']).map(function(o) return assert(!o.isSuccess()));
 	}
 }
