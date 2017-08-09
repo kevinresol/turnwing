@@ -19,7 +19,7 @@ loc.hello('World');
 Data are validated when they are loaded. Combining with type-safety, you can be sure that the translation calls will not fail.
 
 For example, if our `Locale` contains a translation function named `hello`.
-Then the `Provider` will ensure there is a localization string named `hello` when the data is loaded at runtime, not when the data is used (i.e. when `hello()` is called).
+Then the `Provider` will ensure there is a localization string named `hello` when the data is loaded at runtime, not when the data is used (i.e. when `hello()` is called). This allow the program to fail gracefully and early.
 
 ### Hackable
 
