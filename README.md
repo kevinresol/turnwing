@@ -60,7 +60,7 @@ class Main {
 `JsonProvider` is a validating data provider with JSON sources. It utilizes `tink_json` to validate json strings at runtime. Giving you the chance to gracefully fail when the JSON source is invalid.
 
 ```haxe
-var reader = new FileReader('./data');
+var reader = new FileReader(function(lang) return './data/$lang.json');
 var provider = new JsonProvider<Data<MyLocale>>(reader);
 ```
 
