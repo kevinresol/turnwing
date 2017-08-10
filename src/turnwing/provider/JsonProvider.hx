@@ -1,10 +1,10 @@
-package localize.provider;
+package turnwing.provider;
 
 import haxe.Json;
-import localize.*;
+import turnwing.*;
 using tink.CoreApi;
 
-@:genericBuild(localize.Macro.buildJsonProvider())
+@:genericBuild(turnwing.Macro.buildJsonProvider())
 class JsonProvider<T> {}
 
 class JsonProviderBase<T> implements Provider<T> {

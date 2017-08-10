@@ -1,4 +1,4 @@
-package localize;
+package turnwing;
 
 import haxe.macro.Expr;
 import haxe.macro.Type;
@@ -7,23 +7,23 @@ using tink.MacroApi;
 
 class Macro {
 	public static function buildManager() {
-		return BuildCache.getType('localize.Manager', function(ctx:BuildContext) {
+		return BuildCache.getType('turnwing.Manager', function(ctx:BuildContext) {
 			var name = ctx.name;
 			var localeCt = ctx.type.toComplex();
-			var dataCt = macro:localize.Data<$localeCt>;
+			var dataCt = macro:turnwing.Data<$localeCt>;
 			
-			var def = macro class $name extends localize.Manager.ManagerBase<$localeCt, $dataCt> {
+			var def = macro class $name extends turnwing.Manager.ManagerBase<$localeCt, $dataCt> {
 				override function createLocale(data:$dataCt):$localeCt {
-					return new localize.Localizer<$localeCt>(data, template);
+					return new turnwing.Localizer<$localeCt>(data, template);
 				}
 			}
-			def.pack = ['localize'];
+			def.pack = ['turnwing'];
 			return def;
 		});
 	}
 	
 	public static function buildLocalizer() {
-		return BuildCache.getType('localize.Localizer', function(ctx:BuildContext) {
+		return BuildCache.getType('turnwing.Localizer', function(ctx:BuildContext) {
 			var name = ctx.name;
 			var localeCt = ctx.type.toComplex();
 			var localeTp = switch ctx.type {
@@ -35,21 +35,21 @@ class Macro {
 				default:
 					 throw ctx.type.getID() + ' show be an interface';
 			}
-			var dataCt = macro:localize.Data<$localeCt>;
+			var dataCt = macro:turnwing.Data<$localeCt>;
 			
-			var def = macro class $name extends localize.Localizer.LocalizerBase<$dataCt> implements $localeTp {}
+			var def = macro class $name extends turnwing.Localizer.LocalizerBase<$dataCt> implements $localeTp {}
 			def.fields = getLocaleFields(ctx.type);
-			def.pack = ['localize'];
+			def.pack = ['turnwing'];
 			return def;
 		});
 	}
 	
 	public static function buildData() {
-		return BuildCache.getType('localize.Data', function(ctx:BuildContext) {
+		return BuildCache.getType('turnwing.Data', function(ctx:BuildContext) {
 			return {
 				fields: getDataFields(ctx.type),
 				name: ctx.name,
-				pack: ['localize'],
+				pack: ['turnwing'],
 				pos: ctx.pos,
 				kind: TDStructure,
 			}
@@ -57,16 +57,16 @@ class Macro {
 	}
 	
 	public static function buildJsonProvider() {
-		return BuildCache.getType('localize.provider.JsonProvider', function(ctx:BuildContext) {
+		return BuildCache.getType('turnwing.provider.JsonProvider', function(ctx:BuildContext) {
 			var name = ctx.name;
 			var ct = ctx.type.toComplex();
 			
-			var def = macro class $name extends localize.provider.JsonProvider.JsonProviderBase<$ct> {
+			var def = macro class $name extends turnwing.provider.JsonProvider.JsonProviderBase<$ct> {
 				override function fetch(language:String):tink.core.Promise<$ct>
 					return reader.read(language).next(function(raw) return tink.Json.parse((raw:$ct)));
 			}
 			
-			def.pack = ['localize'];
+			def.pack = ['turnwing'];
 			return def;
 		});
 	}

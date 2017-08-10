@@ -1,4 +1,4 @@
-package localize.provider;
+package turnwing.provider;
 
 using haxe.io.Path;
 using sys.FileSystem;

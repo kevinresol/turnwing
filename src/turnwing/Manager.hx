@@ -1,9 +1,9 @@
-package localize;
+package turnwing;
 
-import localize.*;
+import turnwing.*;
 using tink.CoreApi;
 
-@:genericBuild(localize.Macro.buildManager())
+@:genericBuild(turnwing.Macro.buildManager())
 class Manager<Locale> {}
 
 class ManagerBase<Locale, Data> {

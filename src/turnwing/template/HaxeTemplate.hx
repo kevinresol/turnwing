@@ -1,6 +1,6 @@
-package localize.template;
+package turnwing.template;
 
-import localize.*;
+import turnwing.*;
 
 class HaxeTemplate implements Template {
 	public function new() {}

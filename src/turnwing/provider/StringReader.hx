@@ -1,4 +1,4 @@
-package localize.provider;
+package turnwing.provider;
 
 using tink.CoreApi;
 

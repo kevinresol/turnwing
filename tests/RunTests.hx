@@ -1,8 +1,8 @@
 package;
 
-import localize.*;
-import localize.provider.*;
-import localize.template.*;
+import turnwing.*;
+import turnwing.provider.*;
+import turnwing.template.*;
 import tink.unit.*;
 import tink.unit.Assert.*;
 import tink.testrunner.*;

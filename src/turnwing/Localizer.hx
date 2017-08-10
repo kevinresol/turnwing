@@ -1,6 +1,6 @@
-package localize;
+package turnwing;
 
-@:genericBuild(localize.Macro.buildLocalizer())
+@:genericBuild(turnwing.Macro.buildLocalizer())
 class Localizer<Locale> {}
 
 class LocalizerBase<Data> {
