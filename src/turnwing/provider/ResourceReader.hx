@@ -6,7 +6,7 @@ class ResourceReader implements StringReader {
 	var getResourceName:String->String;
 	
 	public function new(?getResourceName:String->String) {
-		this.getResourceName = getResourceName != null ? getResourceName : function(s) return s;
+		this.getResourceName = getResourceName != null ? getResourceName : function(lang) return lang;
 	}
 		
 	public function read(language:String):Promise<String>

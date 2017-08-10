@@ -6,12 +6,14 @@ using sys.io.File;
 using tink.CoreApi;
 
 class FileReader implements StringReader {
-	var folder:String;
 	
-	public function new(folder:String)
-		this.folder = folder.absolutePath();
+	var getFilename:String->String;
+	
+	public function new(?getFilename:String->String) {
+		this.getFilename = getFilename != null ? getFilename : function(lang) return '$lang.json';
+	}
 		
 	public function read(language:String):Promise<String>
-		return Error.catchExceptions(function() return '$folder/$language.json'.getContent());
+		return Error.catchExceptions(function() return getFilename(language).getContent());
 }
 

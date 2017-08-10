@@ -35,7 +35,7 @@ class LocalizerTest {
 	
 	@:before
 	public function before() {
-		reader = new FileReader('./tests/data');
+		reader = new FileReader(function(lang) return './tests/data/$lang.json');
 		template = new HaxeTemplate();
 		return Noise;
 	}
