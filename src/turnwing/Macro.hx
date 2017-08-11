@@ -56,20 +56,6 @@ class Macro {
 		});
 	}
 	
-	public static function buildJsonProvider() {
-		return BuildCache.getType('turnwing.provider.JsonProvider', function(ctx:BuildContext) {
-			var name = ctx.name;
-			var ct = ctx.type.toComplex();
-			
-			var def = macro class $name extends turnwing.provider.JsonProvider.JsonProviderBase<$ct> {
-				override function fetch(language:String):tink.core.Promise<$ct>
-					return reader.read(language).next(function(raw) return tink.Json.parse((raw:$ct)));
-			}
-			
-			def.pack = ['turnwing'];
-			return def;
-		});
-	}
 	
 	static function getDataFields(type:Type):Array<Field> {
 		return switch type {
