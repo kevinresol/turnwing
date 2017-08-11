@@ -38,6 +38,7 @@ import localize.*;
 
 interface MyLocale {
 	function hello(name:String):String;
+	function orange(number:Int):String;
 }
 
 class Main {
@@ -50,12 +51,19 @@ class Main {
 				// data prepared, we can now translate something
 				var localizer = loc.language('en'); 
 				$type(localizer); // MyLocale
-				trace(localizer.hello('World'));
+				trace(localizer.hello('World')); // "Hello, World!"
+				trace(localizer.orange(4)); // "There are 4 orange(s)!"
 			case Failure(e):
 				// something went wrong when fetching the localization data
 				trace(e);
 		});
 	}
+}
+
+// and your json data looks like this:
+{
+	"hello": "Hello, ::name::",
+	"orange": "There are ::number:: orange(s)!"
 }
 ```
 
