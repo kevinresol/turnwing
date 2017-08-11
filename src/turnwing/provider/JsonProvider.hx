@@ -8,6 +8,7 @@ using tink.CoreApi;
 @:genericBuild(turnwing.provider.JsonProvider.build())
 class JsonProvider<T> {}
 
+@:require(tink_json, 'Missing dependency: tink_json')
 class JsonProviderBase<T> implements Provider<T> {
 	var reader:StringReader;
 	

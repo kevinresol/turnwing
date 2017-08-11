@@ -2,4 +2,3 @@
 -D localize
 
 -lib tink_core
--lib tink_json
