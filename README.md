@@ -10,22 +10,24 @@ Translation are done with interfaces. You will never mis-spell the translation k
 
 ```haxe
 // no more string keys and dynamic parameters:
-loc.translate('hello', {name: 'World'});
+loc.translate('hello', {name: 'World'}); 
+// old style translator: only one function exists at all and its type is String->Dynamic->String
 
 // use function calls with typed parameters instead
-loc.hello('World');
+loc.hello('World'); 
+// typed translator: many functions and each one is typed specifically, 
+// e.g. for this particular `hello` function it is String->String 
 ```
 
 ### Piece of mind
 
-Data are validated when they are loaded. Combining with type-safety, you can be sure that the translation calls will not fail.
+There is only one place where errors could happen, that is when the localization data is loaded.
 
-For example, if our `Locale` contains a translation function named `hello`.
-Then the `Provider` will ensure there is a localization string named `hello` when the data is loaded at runtime, not when the data is used (i.e. when `hello()` is called). This allow the program to fail gracefully and early.
+This is because data are validated when they are loaded. The data provider does all the heavy lifting to make sure the loaded data includes all the needed translation keys and values. As a result, there is no chance for actual translation calls to fail.
 
 ### Hackable
 
-Users can plug in different implementations at various part of the library. May it be a `XmlProvider` that parses XML into localization data, or a `ErazorTemplate` that uses another templating engine under the hood.
+Users can plug in different implementations at various part of the library. May it be a `XmlProvider` that parses XML into localization data, or a `ErazorTemplate` that uses the erazor templating engine to render the result.
 
 ## Usage
 
