@@ -1,18 +1,18 @@
 {
-  "name": "turnwing",
-  "license": "MIT",
-  "tags": [
-    "localize",
-    "i18n",
-    "cross"
-  ],
-  "classPath": "src",
-  "contributors": [
-    "kevinresol"
-  ],
-  "releasenote": "initial release",
-  "version": "0.0.0",
-  "dependencies": {
-    "tink_core": ""
-  }
+	"name": "turnwing",
+	"license": "MIT",
+	"tags": [
+		"localize",
+		"i18n",
+		"cross"
+	],
+	"classPath": "src",
+	"contributors": [
+		"kevinresol"
+	],
+	"releasenote": "Initial Release",
+	"version": "0.1.0",
+	"dependencies": {
+		"tink_core": ""
+	}
 }
