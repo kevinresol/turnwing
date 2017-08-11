@@ -9,14 +9,15 @@ Hackable localization library for Haxe
 Translation are done with interfaces. You will never mis-spell the translation key anymore.
 
 ```haxe
-// no more string keys and dynamic parameters:
+// no more old style translator: 
+// there is one and only one translation function and its type is String->Dynamic->String
 loc.translate('hello', {name: 'World'}); 
-// old style translator: only one function exists at all and its type is String->Dynamic->String
 
-// use function calls with typed parameters instead
-loc.hello('World'); 
-// typed translator: many functions and each one is typed specifically, 
-// e.g. for this particular `hello` function it is String->String 
+
+// with turnwing, we have typed translators: 
+// there are a number of user-defined functions and each one is typed specifically
+loc.hello('World'); // String->String
+loc.orange(1); // Int->String
 ```
 
 ### Piece of mind
