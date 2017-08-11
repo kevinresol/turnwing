@@ -12,6 +12,7 @@ Translation are done with interfaces. You will never mis-spell the translation k
 // no more old style translator: 
 // there is one and only one translation function and its type is String->Dynamic->String
 loc.translate('hello', {name: 'World'}); 
+loc.translate('orange', {number: 1});
 
 
 // with turnwing, we have typed translators: 
