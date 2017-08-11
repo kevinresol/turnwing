@@ -77,6 +77,8 @@ var reader = new FileReader(function(lang) return './data/$lang.json');
 var provider = new JsonProvider<Data<MyLocale>>(reader);
 ```
 
+To use it, install `tink_json` and include it as dependency in your project
+
 ## Templates
 
 `HaxeTemplate` is based on the one provided by Haxe's standard library (`haxe.Template`)
