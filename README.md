@@ -11,6 +11,7 @@ Translation are done with interfaces. You will never mis-spell the translation k
 ```haxe
 // no more old style translator: 
 // there is one and only one translation function and its type is String->Dynamic->String
+// serveral things can go wrong here: wrong translation key, wrong param name, wrong param data type
 loc.translate('hello', {name: 'World'}); 
 loc.translate('orange', {number: 1});
 
