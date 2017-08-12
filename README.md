@@ -9,7 +9,7 @@ Hackable localization library for Haxe
 Translation are done with interfaces. You will never mis-spell the translation key anymore.
 
 ```haxe
-// no more old style translator: 
+// old style translator: 
 // there is one and only one translation function and its type is String->Dynamic->String
 // serveral things can go wrong here: wrong translation key, wrong param name, wrong param data type
 loc.translate('hello', {name: 'World'}); 
