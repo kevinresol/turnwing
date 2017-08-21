@@ -1,11 +1,13 @@
 package turnwing.provider;
 
+import turnwing.provider.StringReader;
+
 using haxe.io.Path;
 using sys.FileSystem;
 using sys.io.File;
 using tink.CoreApi;
 
-class FileReader implements StringReader {
+class FileReader implements StringReaderObject {
 	
 	var getFilename:String->String;
 	

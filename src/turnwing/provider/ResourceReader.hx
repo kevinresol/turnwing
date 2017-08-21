@@ -1,8 +1,10 @@
 package turnwing.provider;
 
+import turnwing.provider.StringReader;
+
 using tink.CoreApi;
 
-class ResourceReader implements StringReader {
+class ResourceReader implements StringReaderObject {
 	var getResourceName:String->String;
 	
 	public function new(?getResourceName:String->String) {
