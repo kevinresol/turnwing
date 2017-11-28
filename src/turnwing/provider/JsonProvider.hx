@@ -15,9 +15,8 @@ class JsonProviderBase<T> implements Provider<T> {
 	public function new(reader)
 		this.reader = reader;
 	
-	public function fetch(language:String):Promise<T> {
+	public function fetch(language:Language):Promise<T>
 		throw 'abstract';
-	}
 }
 
 #else

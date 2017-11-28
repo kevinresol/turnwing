@@ -3,6 +3,6 @@ package turnwing;
 using tink.CoreApi;
 
 interface Provider<T> {
-	function fetch(language:String):Promise<T>;
+	function fetch(language:Language):Promise<T>;
 }
 

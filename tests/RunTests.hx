@@ -27,6 +27,10 @@ interface InvalidLocale {
 	function foo(name:String):String;
 }
 
+interface ParentLocale {
+	var child(default, never):MyLocale;
+}
+
 class LocalizerTest {
 	var reader:StringReader;
 	var template:Template;
@@ -56,5 +60,12 @@ class LocalizerTest {
 		var loc = new Manager<InvalidLocale>(new JsonProvider(reader), template);
 		return loc.prepare(['en'])
 			.map(function(o) return assert(!o.isSuccess()));
+	}
+	
+	public function child() {
+		var reader = new FileReader(function(lang) return './tests/data/child-$lang.json');
+		var loc = new Manager<ParentLocale>(new JsonProvider(reader), template);
+		return loc.prepare(['en'])
+			.next(function(o) return assert(loc.language('en').child.hello('World') == 'Hello, World!'));
 	}
 }

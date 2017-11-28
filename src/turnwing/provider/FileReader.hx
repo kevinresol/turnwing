@@ -9,13 +9,12 @@ using tink.CoreApi;
 
 class FileReader implements StringReaderObject {
 	
-	var getFilename:String->String;
+	var getFilename:Language->String;
 	
-	public function new(?getFilename:String->String) {
+	public function new(?getFilename:Language->String)
 		this.getFilename = getFilename != null ? getFilename : function(lang) return '$lang.json';
-	}
 		
-	public function read(language:String):Promise<String>
+	public function read(language:Language):Promise<String>
 		return Error.catchExceptions(function() return getFilename(language).getContent());
 }
 

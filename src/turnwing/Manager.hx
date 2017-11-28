@@ -10,8 +10,8 @@ class ManagerBase<Locale, Data> {
 	
 	var provider:Provider<Data>;
 	var template:Template;
-	var locales:Map<String, Locale>;
-	var data:Map<String, Data>;
+	var locales:Map<Language, Locale>;
+	var data:Map<Language, Data>;
 	
 	
 	public function new(provider, template) {
@@ -21,7 +21,7 @@ class ManagerBase<Locale, Data> {
 		data = new Map();
 	}
 	
-	public function prepare(languages:Array<String>, forceRefresh = false):Promise<Noise> {
+	public function prepare(languages:Array<Language>, forceRefresh = false):Promise<Noise> {
 		if(forceRefresh) {
 			locales = new Map();
 			data = new Map();
@@ -38,7 +38,7 @@ class ManagerBase<Locale, Data> {
 		return Promise.inParallel(promises);
 	}
 	
-	public function language(language:String):Locale {
+	public function language(language:Language):Locale {
 		if(!data.exists(language))
 			throw 'Localization data for language "$language" is not ready. Call prepare() first.';
 			

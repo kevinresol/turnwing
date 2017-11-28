@@ -2,6 +2,7 @@ package turnwing;
 
 import haxe.macro.Expr;
 import haxe.macro.Type;
+import haxe.macro.Context;
 import tink.macro.BuildCache;
 using tink.MacroApi;
 
@@ -71,8 +72,11 @@ class Macro {
 		for(field in cls.fields.get())
 			fields.push({
 				name: field.name,
-				kind: FVar(macro:String, null),
-				pos: field.pos
+				kind: FVar(switch field.kind {
+					case FMethod(_): macro:String;
+					case FVar(_): var ct = field.type.toComplex(); macro:turnwing.Data<$ct>;
+				}, null),
+				pos: field.pos,
 			});
 			
 		return fields;
@@ -82,11 +86,14 @@ class Macro {
 		var cls = getInterface(type);
 		var fields:Array<Field> = [];
 		
-		for(field in cls.fields.get())
-			switch field.type {
-				case TFun(a, ret):
+		var inits = [];
+		
+		for(field in cls.fields.get()) {
+			var name = field.name;
+			
+			switch [field.type, field.kind] {
+				case [TFun(a, ret), _]:
 					
-					var name = field.name;
 					var args:Array<FunctionArg> = [];
 					var params = [];
 					
@@ -112,10 +119,44 @@ class Macro {
 						}),
 						pos: field.pos,
 					});
-					
+				
+				case [t, FVar(AccNormal, AccNever)]:
+					var ct = t.toComplex();
+					fields.push({
+						access: [APublic],
+						name: name,
+						kind: FProp('default', 'never', ct, null),
+						pos: field.pos,
+					});
+					// the cast bypasses the "never" check
+					inits.push(macro (cast this).$name = new turnwing.Localizer<$ct>(__data__.$name, __template__));
+				
 				default:
-					field.pos.error('Locale interface can only define functions');
+					field.pos.error('Locale interface can only define functions and properties with (default, never) access');
 			}
+		}
+		
+		// constructor
+		if(inits.length > 0)
+			fields.push({
+				access: [APublic],
+				name: 'new',
+				kind: FFun({
+					args: [for(name in ['data', 'template']) {
+						name: name,
+						opt: false,
+						type: null,
+						meta: null,
+						value: null
+					}],
+					ret: null,
+					expr: macro {
+						super(data, template);
+						$b{inits};
+					}
+				}),
+				pos: Context.currentPos(),
+			});
 			
 		return fields;
 	}
