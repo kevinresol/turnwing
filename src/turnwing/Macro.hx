@@ -39,7 +39,7 @@ class Macro {
 			var dataCt = macro:turnwing.Data<$localeCt>;
 			
 			var def = macro class $name extends turnwing.Localizer.LocalizerBase<$dataCt> implements $localeTp {}
-			def.fields = getLocaleFields(ctx.type);
+			def.fields = getLocaleFields(ctx.type, ctx.pos);
 			def.pack = ['turnwing'];
 			return def;
 		});
@@ -82,7 +82,7 @@ class Macro {
 		return fields;
 	}
 	
-	static function getLocaleFields(type:Type):Array<Field> {
+	static function getLocaleFields(type:Type, pos):Array<Field> {
 		var cls = getInterface(type);
 		var fields:Array<Field> = [];
 		
@@ -155,7 +155,7 @@ class Macro {
 						$b{inits};
 					}
 				}),
-				pos: Context.currentPos(),
+				pos: pos,
 			});
 			
 		return fields;
