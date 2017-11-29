@@ -6,7 +6,7 @@ Hackable localization library for Haxe
 
 ### Type safety
 
-Translation are done with interfaces. You will never mis-spell the translation key anymore.
+Translations are done with interfaces. You will never mis-spell the translation key anymore.
 
 ```haxe
 // old style translator: 
@@ -35,7 +35,7 @@ Users can plug in different implementations at various part of the library. May 
 ## Usage
 
 ```haxe
-import localize.*;
+import turnwing.*;
 
 interface MyLocale {
 	function hello(name:String):String;
