@@ -120,19 +120,43 @@ class Macro {
 						pos: field.pos,
 					});
 				
-				case [t, FVar(AccNormal, AccNever)]:
+				case [t, FVar(AccCall, AccNever | AccNo)]:
 					var ct = t.toComplex();
 					fields.push({
 						access: [APublic],
 						name: name,
-						kind: FProp('default', 'never', ct, null),
+						kind: FProp('get', 'null', ct, null),
+						pos: field.pos,
+						meta: [{name: ':isVar', pos: field.pos}],
+					});
+					fields.push({
+						access: [],
+						name: 'get_$name',
+						kind: FFun({
+							args: [],
+							ret: null,
+							expr: macro {
+								if($i{name} == null)
+									$i{name} = new turnwing.Localizer<$ct>(__data__.$name, __template__);
+								return $i{name};
+							}
+						}),
+						pos: field.pos,
+					});
+				
+				case [t, FVar(AccNormal, AccNever | AccNo)]:
+					var ct = t.toComplex();
+					fields.push({
+						access: [APublic],
+						name: name,
+						kind: FProp('default', 'null', ct, null),
 						pos: field.pos,
 					});
 					// the cast bypasses the "never" check
-					inits.push(macro (cast this).$name = new turnwing.Localizer<$ct>(__data__.$name, __template__));
+					inits.push(macro $i{name} = new turnwing.Localizer<$ct>(__data__.$name, __template__));
 				
 				default:
-					field.pos.error('Locale interface can only define functions and properties with (default, never) access');
+					field.pos.error('Locale interface can only define functions and properties with (default/get, null/never) access');
 			}
 		}
 		

@@ -28,9 +28,11 @@ interface InvalidLocale {
 }
 
 interface ParentLocale {
-	var child(default, never):MyLocale;
+	var normal(default, null):MyLocale;
+	var getter(get, null):MyLocale;
 }
 
+@:asserts
 class LocalizerTest {
 	var reader:StringReader;
 	var template:Template;
@@ -66,6 +68,11 @@ class LocalizerTest {
 		var reader = new FileReader(function(lang) return './tests/data/child-$lang.json');
 		var loc = new Manager<ParentLocale>(new JsonProvider(reader), template);
 		return loc.prepare(['en'])
-			.next(function(o) return assert(loc.language('en').child.hello('World') == 'Hello, World!'));
+			.next(function(o) {
+				var en = loc.language('en');
+				asserts.assert(en.normal.hello('World') == 'Hello, World!');
+				asserts.assert(en.getter.hello('World') == 'Hello, World!');
+				return asserts.done();
+			});
 	}
 }

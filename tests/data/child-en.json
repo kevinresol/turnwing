@@ -1,5 +1,8 @@
 {
-	"child": {
+	"normal": {
+		"hello": "Hello, ::name::!"
+	},
+	"getter": {
 		"hello": "Hello, ::name::!"
 	}
 }
