@@ -20,6 +20,8 @@ class RunTests {
 }
 
 interface MyLocale {
+	var normal(default, null):String;
+	var getter(get, null):String;
 	function hello(name:String):String;
 }
 
@@ -49,7 +51,12 @@ class LocalizerTest {
 	public function localize() {
 		var loc = new Manager<MyLocale>(new JsonProvider(reader), template);
 		return loc.prepare(['en'])
-			.next(function(o) return assert(loc.language('en').hello('World') == 'Hello, World!'));
+			.next(function(o) {
+				asserts.assert(loc.language('en').hello('World') == 'Hello, World!');
+				asserts.assert(loc.language('en').normal == 'Hello, World!');
+				asserts.assert(loc.language('en').getter == 'Hello, World!');
+				return asserts.done();
+			});
 	}
 	
 	public function noData() {
@@ -71,7 +78,11 @@ class LocalizerTest {
 			.next(function(o) {
 				var en = loc.language('en');
 				asserts.assert(en.normal.hello('World') == 'Hello, World!');
+				asserts.assert(en.normal.normal == 'Hello, World!');
+				asserts.assert(en.normal.getter == 'Hello, World!');
 				asserts.assert(en.getter.hello('World') == 'Hello, World!');
+				asserts.assert(en.getter.normal == 'Hello, World!');
+				asserts.assert(en.getter.getter == 'Hello, World!');
 				return asserts.done();
 			});
 	}

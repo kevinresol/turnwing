@@ -72,9 +72,9 @@ class Macro {
 		for(field in cls.fields.get())
 			fields.push({
 				name: field.name,
-				kind: FVar(switch field.kind {
-					case FMethod(_): macro:String;
-					case FVar(_): var ct = field.type.toComplex(); macro:turnwing.Data<$ct>;
+				kind: FVar(switch [field.kind, field.type.getID()] {
+					case [FMethod(_), _], [FVar(_), 'String']: macro:String;
+					case [FVar(_), _]: var ct = field.type.toComplex(); macro:turnwing.Data<$ct>;
 				}, null),
 				pos: field.pos,
 			});
@@ -127,22 +127,35 @@ class Macro {
 						name: name,
 						kind: FProp('get', 'null', ct, null),
 						pos: field.pos,
-						meta: [{name: ':isVar', pos: field.pos}],
 					});
-					fields.push({
-						access: [],
-						name: 'get_$name',
-						kind: FFun({
-							args: [],
-							ret: null,
-							expr: macro {
-								if($i{name} == null)
-									$i{name} = new turnwing.Localizer<$ct>(__data__.$name, __template__);
-								return $i{name};
-							}
-						}),
-						pos: field.pos,
-					});
+					switch t.getID() {
+						case 'String': 
+							fields.push({
+								access: [AInline],
+								name: 'get_$name',
+								kind: FFun({
+									args: [],
+									ret: null,
+									expr: macro return __data__.$name,
+								}),
+								pos: field.pos,
+							});
+						default:
+							fields.push({
+								access: [],
+								name: 'get_$name',
+								kind: FFun({
+									args: [],
+									ret: null,
+									expr: macro {
+										if($i{name} == null)
+											$i{name} = new turnwing.Localizer<$ct>(__data__.$name, __template__);
+										return $i{name};
+									}
+								}),
+								pos: field.pos,
+							});
+					}
 				
 				case [t, FVar(AccNormal, AccNever | AccNo)]:
 					var ct = t.toComplex();
@@ -153,7 +166,10 @@ class Macro {
 						pos: field.pos,
 					});
 					// the cast bypasses the "never" check
-					inits.push(macro $i{name} = new turnwing.Localizer<$ct>(__data__.$name, __template__));
+					inits.push(switch t.getID() {
+						case 'String': macro $i{name} = __data__.$name;
+						default: macro $i{name} = new turnwing.Localizer<$ct>(__data__.$name, __template__);
+					});
 				
 				default:
 					field.pos.error('Locale interface can only define functions and properties with (default/get, null/never) access');

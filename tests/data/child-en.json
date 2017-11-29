@@ -1,8 +1,12 @@
 {
 	"normal": {
-		"hello": "Hello, ::name::!"
+		"hello": "Hello, ::name::!",
+		"normal": "Hello, World!",
+		"getter": "Hello, World!"
 	},
 	"getter": {
-		"hello": "Hello, ::name::!"
+		"hello": "Hello, ::name::!",
+		"normal": "Hello, World!",
+		"getter": "Hello, World!"
 	}
 }
