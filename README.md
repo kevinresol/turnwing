@@ -8,16 +8,19 @@ Hackable localization library for Haxe
 
 Translations are done with interfaces. You will never mis-spell the translation key anymore.
 
+In many existing localization libraries, the translation function looks like this:
 ```haxe
-// old style translator: 
-// there is one and only one translation function and its type is String->Dynamic->String
-// serveral things can go wrong here: wrong translation key, wrong param name, wrong param data type
 loc.translate('hello', {name: 'World'}); 
 loc.translate('orange', {number: 1});
+```
+There is one and only one translation function and its type is `String->Dynamic->String`.
+That means it takes a String key, a Dynamic parameter object and returns a substituted string.
+Serveral things can go wrong here: wrong translation key, wrong param name or wrong param data type.
 
+With turnwing, we have typed translators. 
+Each of them is a user-defined function and typed specifically.
 
-// with turnwing, we have typed translators: 
-// there are a number of user-defined functions and each one is typed specifically
+```haxe
 loc.hello('World'); // String->String
 loc.orange(1); // Int->String
 ```
