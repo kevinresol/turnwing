@@ -43,6 +43,11 @@ import turnwing.*;
 interface MyLocale {
 	function hello(name:String):String;
 	function orange(number:Int):String;
+	var sub(get, never):SubLocale;
+}
+
+interface SubLocale {
+	function yo():String;
 }
 
 class Main {
@@ -67,7 +72,10 @@ class Main {
 // and your json data looks like this:
 {
 	"hello": "Hello, ::name::",
-	"orange": "There are ::number:: orange(s)!"
+	"orange": "There are ::number:: orange(s)!",
+	"sub": {
+		"yo": "Yo!"
+	}
 }
 ```
 
