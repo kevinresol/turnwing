@@ -25,7 +25,7 @@ loc.hello('World'); // String->String
 loc.orange(1); // Int->String
 ```
 
-### Piece of mind
+### Peace of mind
 
 There is only one place where errors could happen, that is when the localization data is loaded.
 
