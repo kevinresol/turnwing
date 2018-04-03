@@ -5,11 +5,13 @@ import turnwing.provider.StringReader;
 using tink.CoreApi;
 
 class ResourceReader implements StringReaderObject {
-	var getResourceName:Language->String;
 	
 	public function new(?getResourceName:Language->String)
-		this.getResourceName = getResourceName != null ? getResourceName : function(lang) return lang;
+		if(getResourceName != null) this.getResourceName = getResourceName;
 		
+	public dynamic function getResourceName(lang:Language):String
+		return lang;
+	
 	public function read(language:Language):Promise<String>
 		return Error.catchExceptions(function() return haxe.Resource.getString(getResourceName(language)));
 }
