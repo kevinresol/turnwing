@@ -34,7 +34,7 @@ class Macro {
 						default: throw 'assert';
 					}
 				default:
-					 throw ctx.type.getID() + ' show be an interface';
+					 throw ctx.type.getID() + ' should be an interface';
 			}
 			var dataCt = macro:turnwing.Data<$localeCt>;
 			
