@@ -39,6 +39,8 @@ Users can plug in different implementations at various part of the library. May 
 
 ```haxe
 import turnwing.*;
+import turnwing.provider.*;
+import turnwing.template.*;
 
 interface MyLocale {
 	function hello(name:String):String;
@@ -52,8 +54,8 @@ interface SubLocale {
 
 class Main {
 	static function main() {
-		var provider = /* choose one from turnwing.provider package or implements your own Provider */;
-		var template = /* choose one from turnwing.template package or implements your own Template */;
+		var provider = new JsonProvider(new ResourceReader(lang -> '$lang.json'));
+		var template = new HaxeTemplate();
 		var loc = new Manager<MyLocale>(provider, template);
 		loc.prepare(['en']).handle(function(o) switch o {
 			case Success(_):
