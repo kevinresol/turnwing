@@ -12,7 +12,7 @@ class FileReader implements StringReaderObject {
 	public function new(?getFilename:Language->String)
 		if(getFilename != null) this.getFilename = getFilename;
 	
-	public dynamic function getFilename(lang:Language):String
+	dynamic function getFilename(lang:Language):String
 		 return '$lang.json';
 		
 	public function read(language:Language):Promise<String>

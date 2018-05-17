@@ -9,7 +9,7 @@ class ResourceReader implements StringReaderObject {
 	public function new(?getResourceName:Language->String)
 		if(getResourceName != null) this.getResourceName = getResourceName;
 		
-	public dynamic function getResourceName(lang:Language):String
+	dynamic function getResourceName(lang:Language):String
 		return lang;
 	
 	public function read(language:Language):Promise<String>
