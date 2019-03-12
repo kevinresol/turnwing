@@ -1,19 +1,19 @@
 {
 	"name": "turnwing",
+	"classPath": "src",
+	"dependencies": {
+		"tink_core": ""
+	},
 	"url": "https://github.com/kevinresol/turnwing",
-	"license": "MIT",
+	"contributors": [
+		"kevinresol"
+	],
+	"version": "1.0.0",
+	"releasenote": "Support child localizer",
 	"tags": [
 		"localize",
 		"i18n",
 		"cross"
 	],
-	"classPath": "src",
-	"contributors": [
-		"kevinresol"
-	],
-	"releasenote": "Fix tink_json dependency",
-	"version": "0.1.1",
-	"dependencies": {
-		"tink_core": ""
-	}
+	"license": "MIT"
 }
