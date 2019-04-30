@@ -15,7 +15,7 @@ loc.translate('orange', {number: 1});
 ```
 There is one and only one translation function and its type is `String->Dynamic->String`.
 That means it takes a String key, a Dynamic parameter object and returns a substituted string.
-Serveral things can go wrong here: wrong translation key, wrong param name or wrong param data type.
+Several things can go wrong here: wrong translation key, wrong param name or wrong param data type.
 
 With turnwing, we have typed translators. 
 Each of them is a user-defined function and typed specifically.
@@ -73,7 +73,7 @@ class Main {
 
 // and your json data looks like this:
 {
-	"hello": "Hello, ::name::",
+	"hello": "Hello, ::name::!",
 	"orange": "There are ::number:: orange(s)!",
 	"sub": {
 		"yo": "Yo!"
