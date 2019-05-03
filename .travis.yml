@@ -30,7 +30,7 @@ script:
   - lix run travix neko
   - lix run travix python
   - lix run travix node
-  # - lix run travix js
+  - lix run travix js
   - lix run travix flash
   - lix run travix java
   - lix run travix cpp

@@ -5,6 +5,7 @@ import haxe.macro.Type;
 import haxe.macro.Context;
 import tink.macro.BuildCache;
 using tink.MacroApi;
+using StringTools;
 
 class Macro {
 	public static function buildManager() {
@@ -69,7 +70,9 @@ class Macro {
 		var cls = getInterface(type);
 		var fields:Array<Field> = [];
 		
-		for(field in cls.fields.get())
+		for(field in cls.fields.get()) {
+			if(field.meta.has(':compilerGenerated')) continue; 
+			
 			fields.push({
 				name: field.name,
 				kind: FVar(switch [field.kind, field.type.getID()] {
@@ -78,6 +81,7 @@ class Macro {
 				}, null),
 				pos: field.pos,
 			});
+		}
 			
 		return fields;
 	}
@@ -90,6 +94,8 @@ class Macro {
 		
 		for(field in cls.fields.get()) {
 			var name = field.name;
+			
+			if(field.meta.has(':compilerGenerated')) continue;
 			
 			switch [field.type, field.kind] {
 				case [TFun(a, ret), _]:
@@ -171,7 +177,25 @@ class Macro {
 						default: macro $i{name} = new turnwing.Localizer<$ct>(__data__.$name, __template__);
 					});
 				
-				default:
+				#if haxe4
+				case [t, FVar(AccNormal, AccCtor)] if(field.isFinal):
+					var ct = t.toComplex();
+					fields.push({
+						access: [APublic, AFinal],
+						name: name,
+						kind: FVar(ct, null),
+						pos: field.pos,
+					});
+					// the cast bypasses the "never" check
+					inits.push(switch t.getID() {
+						case 'String': macro $i{name} = __data__.$name;
+						default: macro $i{name} = new turnwing.Localizer<$ct>(__data__.$name, __template__);
+					});
+				#end
+				
+				case [t, m]:
+					trace(t);
+					trace(m);
 					field.pos.error('Locale interface can only define functions and properties with (default/get, null/never) access');
 			}
 		}

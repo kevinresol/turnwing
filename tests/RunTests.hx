@@ -22,6 +22,10 @@ class RunTests {
 interface MyLocale {
 	var normal(default, null):String;
 	var getter(get, null):String;
+	#if haxe4
+	final ultimate:String;
+	#end
+	
 	function hello(name:String):String;
 }
 
@@ -32,6 +36,9 @@ interface InvalidLocale {
 interface ParentLocale {
 	var normal(default, null):MyLocale;
 	var getter(get, null):MyLocale;
+	#if haxe4
+	final ultimate:MyLocale;
+	#end
 }
 
 @:asserts
@@ -55,6 +62,9 @@ class LocalizerTest {
 				asserts.assert(loc.language('en').hello('World') == 'Hello, World!');
 				asserts.assert(loc.language('en').normal == 'Hello, World!');
 				asserts.assert(loc.language('en').getter == 'Hello, World!');
+				#if haxe4
+				asserts.assert(loc.language('en').ultimate == 'Hello, World!');
+				#end
 				return asserts.done();
 			});
 	}
@@ -77,12 +87,22 @@ class LocalizerTest {
 		return loc.prepare(['en'])
 			.next(function(o) {
 				var en = loc.language('en');
-				asserts.assert(en.normal.hello('World') == 'Hello, World!');
-				asserts.assert(en.normal.normal == 'Hello, World!');
-				asserts.assert(en.normal.getter == 'Hello, World!');
-				asserts.assert(en.getter.hello('World') == 'Hello, World!');
-				asserts.assert(en.getter.normal == 'Hello, World!');
-				asserts.assert(en.getter.getter == 'Hello, World!');
+				
+				function test(loc:MyLocale) {
+					asserts.assert(loc.hello('World') == 'Hello, World!');
+					asserts.assert(loc.normal == 'Hello, World!');
+					asserts.assert(loc.getter == 'Hello, World!');
+					#if haxe4
+					asserts.assert(loc.ultimate == 'Hello, World!');	
+					#end
+				}
+				
+				test(en.normal);
+				test(en.getter);
+				#if haxe4
+				test(en.ultimate);
+				#end
+				
 				return asserts.done();
 			});
 	}

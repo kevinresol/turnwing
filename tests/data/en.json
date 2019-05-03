@@ -1,5 +1,6 @@
 {
 	"hello": "Hello, ::name::!",
 	"normal": "Hello, World!",
-	"getter": "Hello, World!"
+	"getter": "Hello, World!",
+	"ultimate": "Hello, World!"
 }
