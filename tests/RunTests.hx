@@ -50,7 +50,7 @@ class LocalizerTest {
 	
 	@:before
 	public function before() {
-		reader = new FileReader(function(lang) return './tests/data/$lang.json');
+		reader = new ResourceReader(function(lang) return '$lang.json');
 		template = new HaxeTemplate();
 		return Noise;
 	}
@@ -82,7 +82,7 @@ class LocalizerTest {
 	}
 	
 	public function child() {
-		var reader = new FileReader(function(lang) return './tests/data/child-$lang.json');
+		var reader = new ResourceReader(function(lang) return 'child-$lang.json');
 		var loc = new Manager<ParentLocale>(new JsonProvider(reader), template);
 		return loc.prepare(['en'])
 			.next(function(o) {
