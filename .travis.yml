@@ -31,9 +31,9 @@ script:
   - lix run travix python
   - lix run travix node
   - lix run travix js
-  - lix run travix flash
+  # - lix run travix flash
   - lix run travix java
   - lix run travix cpp
   - lix run travix cs
   - lix run travix php
-  - lix run travix lua
+  # - lix run travix lua
