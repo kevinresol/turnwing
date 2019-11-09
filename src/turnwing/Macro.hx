@@ -147,9 +147,9 @@ class Macro {
 				case Var(access = Default #if haxe4 | Final #end):
 					var ct = type.toComplex();
 					fields.push({
-						access: access == Default ? [APublic] : [APublic, AFinal],
+						access: #if haxe4 access == Final ? [APublic, AFinal] : #end [APublic],
 						name: name,
-						kind: access == Default ? FProp('default', 'null', ct, null) : FVar(ct, null),
+						kind: #if haxe4 access == Final ? FVar(ct, null) : #end FProp('default', 'null', ct, null),
 						pos: entry.pos,
 					});
 					inits.push(
