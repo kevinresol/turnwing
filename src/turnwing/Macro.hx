@@ -67,136 +67,97 @@ class Macro {
 		}
 	
 	static function getDataFields(type:Type):Array<Field> {
-		var cls = getInterface(type);
 		var fields:Array<Field> = [];
-		
-		for(field in cls.fields.get()) {
-			if(field.meta.has(':compilerGenerated')) continue; 
-			
+		for(entry in process(type)) {
 			fields.push({
-				name: field.name,
-				kind: FVar(switch [field.kind, field.type.getID()] {
-					case [FMethod(_), _], [FVar(_), 'String']: macro:String;
-					case [FVar(_), _]: var ct = field.type.toComplex(); macro:turnwing.Data<$ct>;
+				name: entry.name,
+				pos: entry.pos,
+				kind: FVar({
+					var ct = entry.type.toComplex();
+					entry.kind == Field ? ct : macro:turnwing.Data<$ct>;
 				}, null),
-				pos: field.pos,
 			});
 		}
-			
 		return fields;
 	}
 	
 	static function getLocaleFields(type:Type, pos):Array<Field> {
-		var cls = getInterface(type);
 		var fields:Array<Field> = [];
-		
 		var inits = [];
-		
-		for(field in cls.fields.get()) {
-			var name = field.name;
-			
-			if(field.meta.has(':compilerGenerated')) continue;
-			
-			switch [field.type, field.kind] {
-				case [TFun(a, ret), _]:
+		for(entry in process(type)) {
+			var name = entry.name;
+			var type = entry.type;
+			switch entry.prop {
+				case Func(a):
+					if(entry.kind == Field) {	
+						var args:Array<FunctionArg> = [];
+						var params = [];
+						
+						for(arg in a) {
+							args.push({
+								name: arg.name,
+								opt: arg.opt,
+								type: arg.t.toComplex(),
+							});
+							params.push({
+								field: arg.name,
+								expr: macro $i{arg.name},
+							});
+						}
 					
-					var args:Array<FunctionArg> = [];
-					var params = [];
-					
-					for(arg in a) {
-						args.push({
-							name: arg.name,
-							opt: arg.opt,
-							type: arg.t.toComplex(),
+						fields.push({
+							access: [APublic],
+							name: name,
+							kind: FFun({
+								args: args,
+								ret: type.toComplex(),
+								expr: macro return __template__.execute(__data__.$name, ${EObjectDecl(params).at(entry.pos)}),
+							}),
+							pos: entry.pos,
 						});
-						params.push({
-							field: arg.name,
-							expr: macro $i{arg.name},
-						});
+					} else {
+						entry.pos.error('Function returning sub-locale is not supported');
 					}
-				
-					fields.push({
-						access: [APublic],
-						name: name,
-						kind: FFun({
-							args: args,
-							ret: macro:String,
-							expr: macro return __template__.execute(__data__.$name, ${EObjectDecl(params).at(field.pos)}),
-						}),
-						pos: field.pos,
-					});
-				
-				case [t, FVar(AccCall, AccNever | AccNo)]:
-					var ct = t.toComplex();
+				case Var(Getter):
+					var ct = type.toComplex();
 					fields.push({
 						access: [APublic],
 						name: name,
 						kind: FProp('get', 'null', ct, null),
-						pos: field.pos,
+						pos: entry.pos,
 					});
-					switch t.getID() {
-						case 'String': 
-							fields.push({
-								access: [AInline],
-								name: 'get_$name',
-								kind: FFun({
-									args: [],
-									ret: null,
-									expr: macro return __data__.$name,
-								}),
-								pos: field.pos,
-							});
-						default:
-							fields.push({
-								access: [],
-								name: 'get_$name',
-								kind: FFun({
-									args: [],
-									ret: null,
-									expr: macro {
+					fields.push({
+						access: entry.kind == Field ? [AInline] : [],
+						name: 'get_$name',
+						kind: FFun({
+							args: [],
+							ret: null,
+							expr:
+								if(entry.kind == Field)
+									macro return __data__.$name;
+								else
+									macro {
 										if($i{name} == null)
 											$i{name} = new turnwing.Localizer<$ct>(__data__.$name, __template__);
 										return $i{name};
 									}
-								}),
-								pos: field.pos,
-							});
-					}
-				
-				case [t, FVar(AccNormal, AccNever | AccNo)]:
-					var ct = t.toComplex();
+						}),
+						pos: entry.pos,
+					});
+				case Var(access = Default #if haxe4 | Final #end):
+					var ct = type.toComplex();
 					fields.push({
-						access: [APublic],
+						access: access == Default ? [APublic] : [APublic, AFinal],
 						name: name,
-						kind: FProp('default', 'null', ct, null),
-						pos: field.pos,
+						kind: access == Default ? FProp('default', 'null', ct, null) : FVar(ct, null),
+						pos: entry.pos,
 					});
-					// the cast bypasses the "never" check
-					inits.push(switch t.getID() {
-						case 'String': macro $i{name} = __data__.$name;
-						default: macro $i{name} = new turnwing.Localizer<$ct>(__data__.$name, __template__);
-					});
-				
-				#if haxe4
-				case [t, FVar(AccNormal, AccCtor)] if(field.isFinal):
-					var ct = t.toComplex();
-					fields.push({
-						access: [APublic, AFinal],
-						name: name,
-						kind: FVar(ct, null),
-						pos: field.pos,
-					});
-					// the cast bypasses the "never" check
-					inits.push(switch t.getID() {
-						case 'String': macro $i{name} = __data__.$name;
-						default: macro $i{name} = new turnwing.Localizer<$ct>(__data__.$name, __template__);
-					});
-				#end
-				
-				case [t, m]:
-					trace(t);
-					trace(m);
-					field.pos.error('Locale interface can only define functions and properties with (default/get, null/never) access');
+					inits.push(
+						if(entry.kind == Field)
+							macro $i{name} = __data__.$name;
+						else
+							macro $i{name} = new turnwing.Localizer<$ct>(__data__.$name, __template__)
+					);
 			}
 		}
 		
@@ -224,4 +185,66 @@ class Macro {
 			
 		return fields;
 	}
+	
+	public static function process(type:Type, homogenous = false):LocaleInfo {
+		var cls = getInterface(type);
+		var info = [];
+		
+		for(field in cls.fields.get()) {
+			if(field.meta.has(':compilerGenerated')) continue; 
+			
+			var type = switch field.type {
+				case TFun(_, t): t;
+				case t: t;
+			}
+			info.push({
+				name: field.name,
+				type: type,
+				pos: field.pos,
+				prop: switch field.type {
+					case TFun(a, t): Func(a);
+					case _: Var(getAccess(field));
+				},
+				kind: switch type {
+					case t = TInst(_.get() => cls, _) if(cls.isInterface): Sub(process(t, homogenous));
+					case _: Field;
+				}
+			});
+		}
+		return info;
+	}
+	
+	static function getAccess(field:ClassField):VarRead {
+		return switch field.kind {
+			case FVar(AccCall, AccNever | AccNo): Getter;
+			case FVar(AccNormal, AccNever | AccNo): Default;
+			#if haxe4 case FVar(AccNormal, AccCtor) if(field.isFinal): Final; #end
+			case _: field.pos.error('Locale interface can only define functions and properties with (default/get, null/never) access');
+		}
+	}
+}
+
+typedef LocaleInfo = Array<LocaleEntry>;
+typedef LocaleEntry = {
+	name:String,
+	kind:EntryKind,
+	prop:EntryProp,
+	type:Type,
+	pos:Position,
+}
+
+enum EntryProp {
+	Func(args:Array<{name:String, opt:Bool, t:Type}>);
+	Var(access:VarRead);
+}
+
+enum EntryKind {
+	Sub(info:LocaleInfo);
+	Field;
+}
+
+enum VarRead {
+	Default;
+	Getter;
+	#if haxe4 Final; #end
 }
