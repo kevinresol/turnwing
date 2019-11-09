@@ -190,6 +190,7 @@ class Macro {
 		var cls = getInterface(type);
 		var info = [];
 		
+		var prev = null;
 		for(field in cls.fields.get()) {
 			if(field.meta.has(':compilerGenerated')) continue; 
 			
@@ -197,18 +198,24 @@ class Macro {
 				case TFun(_, t): t;
 				case t: t;
 			}
+			var kind = switch type {
+				case t = TInst(_.get() => cls, _) if(cls.isInterface): Sub(process(t, homogenous));
+				case _: Field;
+			}
+			if(homogenous) {
+				if(prev == null) prev = kind;
+				else if(kind.getIndex() != prev.getIndex()) field.pos.error('Cannot mix sub-locale and locale fields.');
+			}
+			
 			info.push({
 				name: field.name,
-				type: type,
 				pos: field.pos,
+				type: type,
+				kind: kind,
 				prop: switch field.type {
 					case TFun(a, t): Func(a);
 					case _: Var(getAccess(field));
 				},
-				kind: switch type {
-					case t = TInst(_.get() => cls, _) if(cls.isInterface): Sub(process(t, homogenous));
-					case _: Field;
-				}
 			});
 		}
 		return info;
