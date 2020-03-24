@@ -4,6 +4,8 @@
 -lib tink_unittest
 -lib tink_json
 
+-D analyzer-optimize
+
 -resource tests/data/json/child-en.json@child-en.json
 -resource tests/data/json/en.json@en.json
 -resource tests/data/ftl/child-en.ftl@child-en.ftl
