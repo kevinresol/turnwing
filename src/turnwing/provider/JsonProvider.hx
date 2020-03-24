@@ -3,6 +3,22 @@ package turnwing.provider;
 import turnwing.source.Source;
 import turnwing.template.Template;
 
+/**
+ * JsonProvider consumes the JSON syntax.
+ * Each key corresponds to the function name of the Locale interface.
+ * Nested interfaces are represented as nested objects.
+ *
+ * Example: (usage with HaxeTemplate)
+ * ```json
+ * {
+ *   "plain": "plain value",
+ *   "parametrized": "parameterized ::variableName::",
+ *   "nested": {
+ *     "another": "value"
+ *   }
+ * }
+ * ```
+ */
 @:genericBuild(turnwing.provider.JsonProvider.build())
 class JsonProvider<Locale> {}
 

@@ -3,6 +3,18 @@ package turnwing.provider;
 import turnwing.source.Source;
 import turnwing.util.Prefix;
 
+/**
+ * FluentProvider consumes the FTL syntax.
+ * Each message id corresponds to the function name of the Locale interface.
+ * Nested interfaces are represented as prefixed message ids (delimited with a dash).
+ *
+ * Example:
+ * ```ftl
+ * plain = plain value
+ * parametrized = parameterized { $variableName }
+ * nested-another = value
+ * ```
+ */
 @:genericBuild(turnwing.provider.FluentProvider.build())
 class FluentProvider<Locale> {}
 
