@@ -9,15 +9,17 @@ Hackable localization library for Haxe
 Translations are done with interfaces. You will never mis-spell the translation key anymore.
 
 In many existing localization libraries, the translation function looks like this:
+
 ```haxe
-loc.translate('hello', {name: 'World'}); 
+loc.translate('hello', {name: 'World'});
 loc.translate('orange', {number: 1});
 ```
+
 There is one and only one translation function and its type is `String->Dynamic->String`.
 That means it takes a String key, a Dynamic parameter object and returns a substituted string.
 Several things can go wrong here: wrong translation key, wrong param name or wrong param data type.
 
-With turnwing, we have typed translators. 
+With turnwing, we have typed translators.
 Each of them is a user-defined function and typed specifically.
 
 ```haxe
@@ -33,7 +35,12 @@ This is because data are validated when they are loaded. The data provider does 
 
 ### Hackable
 
-Users can plug in different implementations at various part of the library. May it be a `XmlProvider` that parses XML into localization data, or a `ErazorTemplate` that uses the erazor templating engine to render the result.
+Users can plug in different implementations at various part of the library.
+
+For example, `JsonProvider` uses JSON as the underlying localization format.
+One can easily write a `XmlProvider` (perhaps with tink_xml).
+
+Also, an `ErazorTemplate` may replace the default `HaxeTemplate` implementation.
 
 ## Usage
 
@@ -54,13 +61,13 @@ interface SubLocale {
 
 class Main {
 	static function main() {
-		var provider = new JsonProvider(new ResourceReader(lang -> '$lang.json'));
+		var source = new ResourceStringSource(lang -> '$lang.json');
 		var template = new HaxeTemplate();
-		var loc = new Manager<MyLocale>(provider, template);
+		var loc = new Manager<MyLocale>(new JsonProvider<MyLocale>(source, template));
 		loc.prepare(['en']).handle(function(o) switch o {
 			case Success(_):
 				// data prepared, we can now translate something
-				var localizer = loc.language('en'); 
+				var localizer = loc.language('en');
 				$type(localizer); // MyLocale
 				trace(localizer.hello('World')); // "Hello, World!"
 				trace(localizer.orange(4)); // "There are 4 orange(s)!"
@@ -83,15 +90,17 @@ class Main {
 
 ## Providers
 
-`JsonProvider` is a data provider for JSON sources. Its data validation is powered by `tink_json`, which generates the validation code with macro at compile time according to the type information of the user-defined locale interface.
+`JsonProvider` is a data provider for JSON sources.
+Its data validation is powered by `tink_json`,
+which generates the validation code with macro at compile time
+according to the type information of the user-defined locale interface.
+
+Usage:
 
 ```haxe
-var reader = new FileReader(function(lang) return './data/$lang.json');
-var provider = new JsonProvider<Data<MyLocale>>(reader);
+var source = new ResourceStringSource(lang -> '$lang.json');
+var template = new HaxeTemplate();
+var provider = new JsonProvider<MyLocale>(source, template);
 ```
 
 To use it, install `tink_json` and include it as dependency in your project
-
-## Templates
-
-`HaxeTemplate` is based on the one provided by Haxe's standard library (`haxe.Template`)
