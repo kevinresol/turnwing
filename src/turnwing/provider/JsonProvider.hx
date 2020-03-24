@@ -21,9 +21,8 @@ class JsonProviderBase<Locale, Data> implements Provider<Locale> {
 		this.template = template;
 	}
 
-	public function prepare(language:String):Promise<Locale> {
+	public function prepare(language:String):Promise<Locale>
 		return source.fetch(language).next(parse).next(make);
-	}
 
 	function parse(v:String):Outcome<Data, Error>
 		throw 'abstract';
