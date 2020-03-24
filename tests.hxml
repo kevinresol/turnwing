@@ -6,5 +6,5 @@
 
 -resource tests/data/json/child-en.json@child-en.json
 -resource tests/data/json/en.json@en.json
-# -resource tests/data/ftl/child-en.ftl@child-en.ftl
+-resource tests/data/ftl/child-en.ftl@child-en.ftl
 -resource tests/data/ftl/en.ftl@en.ftl

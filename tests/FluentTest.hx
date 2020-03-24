@@ -5,23 +5,9 @@ import turnwing.provider.*;
 import turnwing.source.*;
 import turnwing.template.*;
 import tink.unit.Assert.*;
+import Locales;
 
 using tink.CoreApi;
-
-interface MyLocale {
-	function empty():String;
-	function hello(name:String):String;
-}
-
-interface InvalidLocale { // test invalid source
-	function foo(name:String):String;
-}
-
-// interface ParentLocale {
-// 	var normal(default, null):MyLocale;
-// 	var getter(get, null):MyLocale;
-// 	final ultimate:MyLocale;
-// }
 
 @:asserts
 class FluentTest {
@@ -54,19 +40,19 @@ class FluentTest {
 		return loc.prepare(['en']).map(function(o) return assert(!o.isSuccess()));
 	}
 
-	// public function child() {
-	// 	var source = new ResourceStringSource(lang -> 'child-$lang.ftl');
-	// 	var loc = new Manager<ParentLocale>(new FluentProvider<ParentLocale>(source, {useIsolating: false}));
-	// 	return loc.prepare(['en']).next(function(o) {
-	// 		var en = loc.language('en');
-	// 		function test(loc:MyLocale) {
-	// 			asserts.assert(loc.empty() == 'Hello, World!');
-	// 			asserts.assert(loc.hello('World') == 'Hello, World!');
-	// 		}
-	// 		test(en.normal);
-	// 		test(en.getter);
-	// 		test(en.ultimate);
-	// 		return asserts.done();
-	// 	});
-	// }
+	public function child() {
+		var source = new ResourceStringSource(lang -> 'child-$lang.ftl');
+		var loc = new Manager<ParentLocale>(new FluentProvider<ParentLocale>(source, {useIsolating: false}));
+		return loc.prepare(['en']).next(function(o) {
+			var en = loc.language('en');
+			function test(loc:MyLocale) {
+				asserts.assert(loc.empty() == 'Hello, World!');
+				asserts.assert(loc.hello('World') == 'Hello, World!');
+			}
+			test(en.normal);
+			test(en.getter);
+			test(en.ultimate);
+			return asserts.done();
+		});
+	}
 }

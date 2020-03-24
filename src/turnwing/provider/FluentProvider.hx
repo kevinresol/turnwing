@@ -1,6 +1,7 @@
 package turnwing.provider;
 
 import turnwing.source.Source;
+import turnwing.util.Prefix;
 
 @:genericBuild(turnwing.provider.FluentProvider.build())
 class FluentProvider<Locale> {}
@@ -40,9 +41,11 @@ class FluentProviderBase<Locale> implements Provider<Locale> {
 
 class FluentLocaleBase {
 	final __bundle__:FluentBundle;
+	final __prefix__:Prefix;
 
-	public function new(bundle) {
+	public function new(bundle, prefix) {
 		__bundle__ = bundle;
+		__prefix__ = prefix;
 	}
 }
 
