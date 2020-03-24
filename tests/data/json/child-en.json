@@ -1,20 +1,14 @@
 {
 	"normal": {
 		"hello": "Hello, ::name::!",
-		"normal": "Hello, World!",
-		"getter": "Hello, World!",
-		"ultimate": "Hello, World!"
+		"empty": "Hello, World!"
 	},
 	"getter": {
 		"hello": "Hello, ::name::!",
-		"normal": "Hello, World!",
-		"getter": "Hello, World!",
-		"ultimate": "Hello, World!"
+		"empty": "Hello, World!"
 	},
 	"ultimate": {
 		"hello": "Hello, ::name::!",
-		"normal": "Hello, World!",
-		"getter": "Hello, World!",
-		"ultimate": "Hello, World!"
+		"empty": "Hello, World!"
 	}
 }

@@ -1,43 +1,43 @@
 package turnwing.provider;
 
-#if !macro
-
-import turnwing.*;
-using tink.CoreApi;
+import turnwing.source.Source;
+import turnwing.template.Template;
 
 @:genericBuild(turnwing.provider.JsonProvider.build())
-class JsonProvider<T> {}
+class JsonProvider<Locale> {}
 
-@:require(tink_json, 'Missing dependency: tink_json')
-class JsonProviderBase<T> implements Provider<T> {
-	var reader:StringReader;
-	
-	public function new(reader)
-		this.reader = reader;
-	
-	public function fetch(language:Language):Promise<T>
+@:genericBuild(turnwing.provider.JsonProvider.JsonLocale.build())
+class JsonLocale<Locale> {}
+
+@:genericBuild(turnwing.provider.JsonProvider.JsonData.build())
+class JsonData<Locale> {}
+
+class JsonProviderBase<Locale, Data> implements Provider<Locale> {
+	final source:Source<String>;
+	final template:Template;
+
+	public function new(source, template) {
+		this.source = source;
+		this.template = template;
+	}
+
+	public function prepare(language:String):Promise<Locale> {
+		return source.fetch(language).next(parse).next(make);
+	}
+
+	function parse(v:String):Outcome<Data, Error>
+		throw 'abstract';
+
+	function make(data:Data):Locale
 		throw 'abstract';
 }
 
-#else
+class JsonLocaleBase<Data> {
+	final __template__:Template;
+	final __data__:Data;
 
-import tink.macro.BuildCache;
-using tink.MacroApi;
-
-class JsonProvider {
-	public static function build() {
-		return BuildCache.getType('turnwing.provider.JsonProvider', function(ctx:BuildContext) {
-			var name = ctx.name;
-			var ct = ctx.type.toComplex();
-			
-			var def = macro class $name extends turnwing.provider.JsonProvider.JsonProviderBase<$ct> {
-				override function fetch(language:String):tink.core.Promise<$ct>
-					return reader.read(language).next(function(raw) return tink.Json.parse((raw:$ct)));
-			}
-			
-			def.pack = ['turnwing'];
-			return def;
-		});
+	public function new(template, data) {
+		__template__ = template;
+		__data__ = data;
 	}
 }
-#end

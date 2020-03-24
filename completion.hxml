@@ -1,0 +1,8 @@
+tests.hxml
+
+-lib turnwing
+-lib travix
+-lib hxnodejs
+
+-js bin/completion/index.js
+--no-output
