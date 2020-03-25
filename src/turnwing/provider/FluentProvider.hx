@@ -47,6 +47,46 @@ class FluentProviderBase<Locale> implements Provider<Locale> {
 	function validate(bundle:FluentBundle):Outcome<FluentBundle, Error>
 		throw 'abstract';
 
+	function validateMessage(bundle:FluentBundle, id:String, suppliedVariables:Array<String>):Option<Error> {
+		return switch bundle.getMessage(id) {
+			case null:
+				Some(new Error('Missing Message "$id"'));
+			case message:
+				validatePattern(bundle, message.value, 'Message "$id"', suppliedVariables);
+		}
+	}
+
+	// TODO: complete the validation (rescusively)
+	function validatePattern(bundle:FluentBundle, pattern:Pattern, location:String, suppliedVariables:Array<String>):Option<Error> {
+		if (Std.is(pattern, Array)) {
+			for (element in (pattern : Array<PatternElement>))
+				switch (element : Expression).type {
+					case null: // plain String
+					case 'select':
+						var select:SelectExpression = cast element;
+					case 'var':
+						var variable:VariableReference = cast element;
+						if (suppliedVariables.indexOf(variable.name) == -1)
+							return Some(new Error('Superfluous variable "${variable.name}". (Not provided in the Locale interface)'));
+					case 'term':
+						var term:TermReference = cast element;
+						if (!bundle._terms.has('-' + term.name))
+							return Some(new Error('Term "${term.name}" does not exist. (Required by $location)'));
+					case 'mesg':
+						var message:MessageReference = cast element;
+					case 'func':
+						var func:FunctionReference = cast element;
+					case 'narg':
+						var narg:NamedArgument = cast element;
+					case 'str':
+						var str:StringLiteral = cast element;
+					case 'num':
+						var num:NumberLiteral = cast element;
+				}
+		}
+		return None;
+	}
+
 	function make(bundle:FluentBundle):Locale
 		throw 'abstract';
 }
@@ -61,12 +101,17 @@ class FluentLocaleBase {
 	}
 }
 
+// JS Externs below:
+
 @:jsRequire('@fluent/bundle', 'FluentBundle')
 extern class FluentBundle {
+	var _terms:js.lib.Map<String, Term>;
+	var _messages:js.lib.Map<String, Message>;
+
 	function new(lang:String, ?opts:{});
 	function addResource(res:FluentResource):Array<js.lib.Error>;
-	function getMessage(id:String):FluentMessage;
-	function formatPattern(pattern:FluentPattern, params:Dynamic):String;
+	function getMessage(id:String):Message;
+	function formatPattern(pattern:Pattern, params:Dynamic):String;
 }
 
 @:jsRequire('@fluent/bundle', 'FluentResource')
@@ -74,23 +119,65 @@ extern class FluentResource {
 	function new(ftl:String);
 }
 
-typedef FluentMessage = {
+typedef Message = {
 	id:String,
-	value:FluentPattern,
+	value:Pattern,
 }
 
-typedef FluentPattern = haxe.extern.EitherType<String, Array<FluentPatternElement>>;
-typedef FluentPatternElement = Any;
-/*
-	class FluentProviderImpl {
-	function parse(v:String):Outcome<FluentResource, Error>
-		throw 'abstract';
-	}
+typedef Term = {
+	id:String,
+	value:Pattern,
+}
 
-	class FluentLocaleImpl {
-	public function new()
-		public function foo(name:String) {
-			return bundle.getMessage('foo', name)
-		}
-	}
- */
+typedef Pattern = haxe.extern.EitherType<String, Array<PatternElement>>;
+typedef PatternElement = haxe.extern.EitherType<String, Expression>;
+
+typedef Expression = {
+	?type:String,
+}
+
+typedef SelectExpression = Expression & {
+	selector:Expression,
+	variants:Array<Variant>,
+	star:Int,
+}
+
+typedef VariableReference = Expression & {
+	name:String,
+}
+
+typedef TermReference = Expression & {
+	name:String,
+	attr:String,
+	args:Array<haxe.extern.EitherType<Expression, NamedArgument>>,
+}
+
+typedef MessageReference = Expression & {
+	name:String,
+	attr:String,
+}
+
+typedef FunctionReference = Expression & {
+	name:String,
+	args:Array<haxe.extern.EitherType<Expression, NamedArgument>>,
+};
+
+typedef Variant = Expression & {
+	value:Pattern,
+}
+
+typedef NamedArgument = Expression & {
+	name:String,
+	value:Literal,
+}
+
+typedef Literal = haxe.extern.EitherType<StringLiteral, NumberLiteral>;
+
+typedef StringLiteral = Expression & {
+	value:String,
+}
+
+typedef NumberLiteral = Expression & {
+	value:Int,
+	precision:Int,
+}

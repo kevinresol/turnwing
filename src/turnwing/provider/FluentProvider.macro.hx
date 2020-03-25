@@ -20,11 +20,10 @@ class FluentProvider {
 					var fullname = prefix.add(entry.name, '-');
 					switch entry.kind {
 						case Term(args):
-							validations.push(macro {
-								switch bundle.getMessage($v{fullname}) {
-									case null: return tink.core.Outcome.Failure(new tink.core.Error('Missing Message "' + $v{fullname} + '"'));
-									case message: // TODO: check function parameters
-								}
+							var variables = macro $a{args.map(arg -> macro $v{arg.name})};
+							validations.push(macro switch validateMessage(bundle, $v{fullname}, $variables) {
+								case Some(error): return tink.core.Outcome.Failure(error);
+								case None: // ok
 							});
 						case Sub(_, info):
 							generate(info, fullname);
