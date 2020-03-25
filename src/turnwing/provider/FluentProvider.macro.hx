@@ -21,10 +21,7 @@ class FluentProvider {
 					switch entry.kind {
 						case Term(args):
 							var variables = macro $a{args.map(arg -> macro $v{arg.name})};
-							validations.push(macro switch validateMessage(bundle, $v{fullname}, $variables) {
-								case Some(error): return tink.core.Outcome.Failure(error);
-								case None: // ok
-							});
+							validations.push(macro new tink.core.Named($v{fullname}, $variables));
 						case Sub(_, info):
 							generate(info, fullname);
 					}
@@ -35,7 +32,13 @@ class FluentProvider {
 
 			var def = macro class $name extends turnwing.provider.FluentProvider.FluentProviderBase<$localeCt> {
 				override function validate(bundle:turnwing.provider.FluentProvider.FluentBundle) {
-					$b{validations};
+					var validations = $a{validations};
+					for (v in validations)
+						switch validateMessage(bundle, v.name, v.value) {
+							case Some(error):
+								return tink.core.Outcome.Failure(error);
+							case None: // ok
+						}
 					return tink.core.Outcome.Success(bundle);
 				}
 
@@ -75,7 +78,7 @@ class FluentLocale {
 				switch entry.kind {
 					case Term(args):
 						var params = EObjectDecl([for (arg in args) {field: arg.name, expr: macro $i{arg.name}}]).at(entry.pos);
-						var body = macro __bundle__.formatPattern(__bundle__.getMessage(__prefix__.add($v{entry.name}, '-')).value, $params);
+						var body = macro __exec__($v{entry.name}, $params);
 
 						var f = body.func(args.map(a -> a.name.toArg(a.t.toComplex(), a.opt)), macro:String);
 						def.fields.push({

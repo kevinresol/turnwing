@@ -101,6 +101,10 @@ class FluentLocaleBase {
 		__bundle__ = bundle;
 		__prefix__ = prefix;
 	}
+
+	function __exec__(id:String, params:Dynamic) {
+		return __bundle__.formatPattern(__bundle__.getMessage(__prefix__.add(id, '-')).value, params);
+	}
 }
 
 // JS Externs below:
