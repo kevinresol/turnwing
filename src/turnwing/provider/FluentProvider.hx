@@ -27,7 +27,8 @@ class FluentProviderBase<Locale> implements Provider<Locale> {
 
 	public function new(source, ?opt) {
 		this.source = source;
-		this.opt = opt;
+		if (opt != null)
+			this.opt = opt; // let it remain undefined otherwise the js lib will choke
 	}
 
 	public function prepare(language:String):Promise<Locale>
@@ -47,6 +48,7 @@ class FluentProviderBase<Locale> implements Provider<Locale> {
 	function validate(bundle:FluentBundle):Outcome<FluentBundle, Error>
 		throw 'abstract';
 
+	// note: suppliedVariables is the list of argument names specified in the Locale interface
 	function validateMessage(bundle:FluentBundle, id:String, suppliedVariables:Array<String>):Option<Error> {
 		return switch bundle.getMessage(id) {
 			case null:
