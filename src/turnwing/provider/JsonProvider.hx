@@ -22,10 +22,10 @@ import turnwing.template.Template;
 @:genericBuild(turnwing.provider.JsonProvider.build())
 class JsonProvider<Locale> {}
 
-@:genericBuild(turnwing.provider.JsonProvider.JsonLocale.build())
+@:genericBuild(turnwing.provider.JsonProvider.buildLocale())
 class JsonLocale<Locale> {}
 
-@:genericBuild(turnwing.provider.JsonProvider.JsonData.build())
+@:genericBuild(turnwing.provider.JsonProvider.buildData())
 class JsonData<Locale> {}
 
 class JsonProviderBase<Locale, Data> implements Provider<Locale> {

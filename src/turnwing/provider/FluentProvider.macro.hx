@@ -50,6 +50,11 @@ class FluentProvider {
 			def;
 		});
 	}
+
+	// https://github.com/HaxeFoundation/haxe/issues/9271
+	public static function buildLocale() {
+		return FluentLocale.build();
+	}
 }
 
 class FluentLocale {

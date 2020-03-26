@@ -18,7 +18,7 @@ import turnwing.util.Prefix;
 @:genericBuild(turnwing.provider.FluentProvider.build())
 class FluentProvider<Locale> {}
 
-@:genericBuild(turnwing.provider.FluentProvider.FluentLocale.build())
+@:genericBuild(turnwing.provider.FluentProvider.buildLocale())
 class FluentLocale<Locale> {}
 
 class FluentProviderBase<Locale> implements Provider<Locale> {

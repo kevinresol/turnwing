@@ -25,6 +25,16 @@ class JsonProvider {
 			def;
 		});
 	}
+
+	// https://github.com/HaxeFoundation/haxe/issues/9271
+	public static function buildLocale() {
+		return JsonLocale.build();
+	}
+
+	// https://github.com/HaxeFoundation/haxe/issues/9271
+	public static function buildData() {
+		return JsonData.build();
+	}
 }
 
 class JsonLocale {
