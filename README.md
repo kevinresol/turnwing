@@ -90,7 +90,9 @@ class Main {
 
 ## Providers
 
-`JsonProvider` is a data provider for JSON sources.
+#### JsonProvider
+
+`JsonProvider` is a provider for JSON sources.
 Its data validation is powered by `tink_json`,
 which generates the validation code with macro at compile time
 according to the type information of the user-defined locale interface.
@@ -104,3 +106,20 @@ var provider = new JsonProvider<MyLocale>(source, template);
 ```
 
 To use it, install `tink_json` and include it as dependency in your project
+
+#### FluentProvider (JS Only)
+
+`FluentProvider` is a provider for [Fluent](https://projectfluent.org/).
+
+Messages in the FTL file should be named the same as the Locale interface functions.
+Nested interfaces should be delimited by a dash (`-`).
+Please refer to the files in the `tests/data/ftl` folder as an example.
+
+Usage:
+
+```haxe
+var source = new ResourceStringSource(lang -> '$lang.ftl');
+var provider = new FluentProvider<MyLocale>(source);
+```
+
+To use it, you have to install the npm package `@fluent/bundle`
