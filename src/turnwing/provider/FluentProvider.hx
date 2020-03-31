@@ -107,6 +107,24 @@ class FluentLocaleBase {
 	}
 }
 
+abstract Verification(Array<Dynamic>) {
+	public var name(get, never):String;
+	public var value(get, never):Array<String>;
+
+	inline function get_name()
+		return this[0];
+
+	inline function get_value()
+		return untyped (this[1] || []);
+
+	@:from
+	public static inline function nameOnly(name:String):Verification
+		return cast [name];
+
+	public inline function new(name:String, value:Array<String>)
+		this = [name, value];
+}
+
 // JS Externs below:
 
 @:jsRequire('@fluent/bundle', 'FluentBundle')

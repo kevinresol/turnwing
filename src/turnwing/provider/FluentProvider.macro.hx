@@ -19,9 +19,11 @@ class FluentProvider {
 				for (entry in info.entries) {
 					var fullname = prefix.add(entry.name, '-');
 					switch entry.kind {
+						case Term([]):
+							validations.push(macro turnwing.provider.FluentProvider.Verification.nameOnly($v{fullname}));
 						case Term(args):
 							var variables = macro $a{args.map(arg -> macro $v{arg.name})};
-							validations.push(macro new tink.core.Named($v{fullname}, $variables));
+							validations.push(macro new turnwing.provider.FluentProvider.Verification($v{fullname}, $variables));
 						case Sub(_, info):
 							generate(info, fullname);
 					}
