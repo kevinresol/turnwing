@@ -97,6 +97,10 @@ Its data validation is powered by `tink_json`,
 which generates the validation code with macro at compile time
 according to the type information of the user-defined locale interface.
 
+Requires a templating engine to interpolate the parameters.
+The interface is defined in `Template.hx`.
+`HaxeTemplate` is an implementation based on `haxe.Template` from the Haxe standard library.
+
 Usage:
 
 ```haxe
@@ -114,6 +118,9 @@ To use it, install `tink_json` and include it as dependency in your project
 Messages in the FTL file should be named the same as the Locale interface functions.
 Nested interfaces should be delimited by a dash (`-`).
 Please refer to the files in the `tests/data/ftl` folder as an example.
+
+At the moment, the validation logic is incomplete and only performs a very rough check.
+So, runtime error _may_ occur in a locale function call. This will be improved in the future.
 
 Usage:
 
