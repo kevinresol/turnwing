@@ -8,8 +8,8 @@
 	"contributors": [
 		"kevinresol"
 	],
-	"version": "1.0.0",
-	"releasenote": "Support child localizer",
+	"version": "2.0.0",
+	"releasenote": "API Overhaul. Support Fluent (FTL)",
 	"tags": [
 		"localize",
 		"i18n",
