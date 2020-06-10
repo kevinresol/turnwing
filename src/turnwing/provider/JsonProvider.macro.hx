@@ -48,7 +48,7 @@ class JsonLocale {
 			}
 			var dataCt = macro:turnwing.provider.JsonProvider.JsonData<$localeCt>;
 
-			var info = Macro.process(ctx.type);
+			var info = Macro.process(ctx.type, ctx.pos);
 			var inits = [];
 
 			var def = macro class $name extends turnwing.provider.JsonProvider.JsonLocaleBase<$dataCt> implements $localeTp {
@@ -122,7 +122,7 @@ class JsonData {
 	public static function build() {
 		return BuildCache.getType('turnwing.provider.JsonData', function(ctx:BuildContext) {
 			return {
-				fields: getDataFields(ctx.type),
+				fields: getDataFields(ctx.type, ctx.pos),
 				name: ctx.name,
 				pack: ['turnwing', 'provider'],
 				pos: ctx.pos,
@@ -131,9 +131,9 @@ class JsonData {
 		});
 	}
 
-	static function getDataFields(type:Type):Array<Field> {
+	static function getDataFields(type:Type, pos:Position):Array<Field> {
 		var fields:Array<Field> = [];
-		var info = Macro.process(type);
+		var info = Macro.process(type, pos);
 		for (entry in info.entries) {
 			var ct = entry.type.toComplex();
 			fields.push({

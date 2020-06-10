@@ -30,7 +30,7 @@ class FluentProvider {
 				}
 			}
 
-			generate(Macro.process(ctx.type), new Prefix());
+			generate(Macro.process(ctx.type, ctx.pos), new Prefix());
 
 			var def = macro class $name extends turnwing.provider.FluentProvider.FluentProviderBase<$localeCt> {
 				override function validate(bundle:turnwing.provider.FluentProvider.FluentBundle) {
@@ -69,7 +69,7 @@ class FluentLocale {
 				default: throw 'assert';
 			}
 
-			var info = Macro.process(ctx.type);
+			var info = Macro.process(ctx.type, ctx.pos);
 			var inits = [];
 
 			var def = macro class $name extends turnwing.provider.FluentProvider.FluentLocaleBase implements $localeTp {

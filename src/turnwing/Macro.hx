@@ -9,8 +9,8 @@ using tink.MacroApi;
 using StringTools;
 
 class Macro {
-	public static inline function process(type:Type, homogenous = false):LocaleInfo {
-		return processInterface(getInterface(type));
+	public static inline function process(type:Type, pos:Position, homogenous = false):LocaleInfo {
+		return processInterface(getInterface(type, pos));
 	}
 
 	public static function processInterface(cls:ClassType, homogenous = false):LocaleInfo {
@@ -52,12 +52,12 @@ class Macro {
 		return {type: cls, entries: entries};
 	}
 
-	static function getInterface(type:Type):ClassType {
+	static function getInterface(type:Type, pos:Position):ClassType {
 		return switch type {
 			case TInst(_.get() => cls, _) if (cls.isInterface):
 				cls;
 			default:
-				throw type.getID() + ' should be an interface';
+				pos.error(type.getID() + ' should be an interface');
 		}
 	}
 
