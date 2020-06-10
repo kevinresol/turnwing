@@ -27,7 +27,7 @@ class Macro {
 		return BuildCache.getType('turnwing.Localizer', function(ctx:BuildContext) {
 			var name = ctx.name;
 			var localeCt = ctx.type.toComplex();
-			var localeTp = switch ctx.type {
+			var localeTp = switch ctx.type.reduce() {
 				case TInst(cls, _) if(cls.get().isInterface):
 					switch localeCt {
 						case TPath(tp): tp;
@@ -58,11 +58,11 @@ class Macro {
 	}
 	
 	static function getInterface(type:Type):ClassType
-		return switch type {
+		return switch type.reduce() {
 			case TInst(_.get() => cls, _) if(cls.isInterface):
 				cls;
 			default:
-				throw type.getID() + ' show be an interface';
+				throw type.getID() + ' should be an interface';
 		}
 	
 	static function getDataFields(type:Type):Array<Field> {
