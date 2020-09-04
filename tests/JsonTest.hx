@@ -25,28 +25,27 @@ class JsonTest {
 
 	public function localize() {
 		var loc = new Manager<MyLocale>(new JsonProvider<MyLocale>(source, template));
-		return loc.prepare(['en']).next(function(o) {
-			asserts.assert(loc.language('en').empty() == 'Hello, World!');
-			asserts.assert(loc.language('en').hello('World') == 'Hello, World!');
+		return loc.get('en').next(function(locale) {
+			asserts.assert(locale.empty() == 'Hello, World!');
+			asserts.assert(locale.hello('World') == 'Hello, World!');
 			return asserts.done();
 		});
 	}
 
 	public function noData() {
 		var loc = new Manager<MyLocale>(new JsonProvider<MyLocale>(source, template));
-		return loc.prepare(['dummy']).map(function(o) return assert(!o.isSuccess()));
+		return loc.get('dummy').map(function(o) return assert(!o.isSuccess()));
 	}
 
 	public function invalid() {
 		var loc = new Manager<InvalidLocale>(new JsonProvider<InvalidLocale>(source, template));
-		return loc.prepare(['en']).map(function(o) return assert(!o.isSuccess()));
+		return loc.get('en').map(function(o) return assert(!o.isSuccess()));
 	}
 
 	public function child() {
 		var source = new ResourceStringSource(lang -> 'child-$lang.json');
 		var loc = new Manager<ParentLocale>(new JsonProvider<ParentLocale>(source, template));
-		return loc.prepare(['en']).next(function(o) {
-			var en = loc.language('en');
+		return loc.get('en').next(function(en) {
 			function test(loc:MyLocale) {
 				asserts.assert(loc.empty() == 'Hello, World!');
 				asserts.assert(loc.hello('World') == 'Hello, World!');

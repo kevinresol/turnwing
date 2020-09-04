@@ -11,23 +11,16 @@ class Manager<Locale> {
 		this.locales = new Map();
 	}
 
-	public function prepare(languages:Array<String>, forceRefresh = false):Promise<Noise> {
-		var tasks = [];
-
-		for (language in languages)
+	public function get(language:String, forceRefresh = false):Promise<Locale> {
+		// @formatter:off
+		return 
 			if (forceRefresh || !locales.exists(language))
-				tasks.push(provider.prepare(language).next(locale -> {
+				provider.prepare(language).next(locale -> {
 					locales.set(language, locale);
-					Noise;
-				}));
-
-		return Promise.inParallel(tasks);
-	}
-
-	public function language(language:String):Locale {
-		return switch locales.get(language) {
-			case null: throw '"$language" is not ready, call `prepare()` first';
-			case v: v;
-		}
+					locale;
+				});
+			else
+				Promise.resolve(locales.get(language));
+		// @formatter:on
 	}
 }
