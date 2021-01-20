@@ -3,6 +3,7 @@ package;
 interface MyLocale {
 	function empty():String;
 	function hello(name:String):String;
+	function bool(value:Bool):String;
 }
 
 interface InvalidLocale { // test invalid source

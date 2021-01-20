@@ -26,6 +26,8 @@ class FluentTest {
 		return loc.get('en').next(function(locale) {
 			asserts.assert(locale.empty() == 'Hello, World!');
 			asserts.assert(locale.hello('World') == 'Hello, World!');
+			asserts.assert(locale.bool(true) == 'Yes');
+			asserts.assert(locale.bool(false) == 'No');
 			return asserts.done();
 		});
 	}
@@ -47,6 +49,8 @@ class FluentTest {
 			function test(loc:MyLocale) {
 				asserts.assert(loc.empty() == 'Hello, World!');
 				asserts.assert(loc.hello('World') == 'Hello, World!');
+				asserts.assert(loc.bool(true) == 'Yes');
+				asserts.assert(loc.bool(false) == 'No');
 			}
 			test(en.normal);
 			test(en.getter);

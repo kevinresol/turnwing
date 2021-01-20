@@ -1,5 +1,6 @@
 package turnwing.provider;
 
+import haxe.DynamicAccess;
 import turnwing.source.Source;
 import turnwing.util.Prefix;
 
@@ -103,7 +104,16 @@ class FluentLocaleBase {
 	}
 
 	function __exec__(id:String, params:Dynamic) {
-		return __bundle__.formatPattern(__bundle__.getMessage(__prefix__.add(id, '-')).value, params);
+		return __bundle__.formatPattern(__bundle__.getMessage(__prefix__.add(id, '-')).value, __sanitize__(params));
+	}
+	
+	function __sanitize__(params:DynamicAccess<Dynamic>) {
+		final ret = new DynamicAccess<Dynamic>();
+		for(field => value in params) {
+			// Fluent does not support boolean param, we change it to 0/1
+			ret[field] = Type.typeof(value) == TBool ? (value ? 1 : 0) : value;
+		}
+		return ret;
 	}
 }
 

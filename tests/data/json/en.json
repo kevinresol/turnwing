@@ -1,4 +1,5 @@
 {
 	"hello": "Hello, ::name::!",
-	"empty": "Hello, World!"
+	"empty": "Hello, World!",
+	"bool": "::if value::Yes::else::No::end::"
 }
