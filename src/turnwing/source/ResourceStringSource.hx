@@ -10,6 +10,11 @@ class ResourceStringSource implements Source<String> {
 	dynamic function getResourceName(lang:String):String
 		return lang;
 
-	public function fetch(language:String):Promise<String>
-		return Error.catchExceptions(function() return haxe.Resource.getString(getResourceName(language)));
+	public function fetch(language:String):Promise<String> {
+		var name = getResourceName(language);
+		return Error.catchExceptions(function() return switch haxe.Resource.getString(name) {
+			case null: throw new Error(NotFound, 'No resource named "$name"');
+			case v: v;
+		});
+	}
 }
