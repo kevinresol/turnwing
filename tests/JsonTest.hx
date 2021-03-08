@@ -60,4 +60,17 @@ class JsonTest {
 			return asserts.done();
 		});
 	}
+
+	public function extended() {
+		var source = new ResourceStringSource(lang -> 'extended-$lang.json');
+		var loc = new Manager<ExtendedLocale>(new JsonProvider<ExtendedLocale>(source, template));
+		return loc.get('en').next(function(locale) {
+			asserts.assert(locale.extended() == 'Extension!');
+			asserts.assert(locale.empty() == 'Hello, World!');
+			asserts.assert(locale.hello('World') == 'Hello, World!');
+			asserts.assert(locale.bool(true) == 'Yes');
+			asserts.assert(locale.bool(false) == 'No');
+			return asserts.done();
+		});
+	}
 }

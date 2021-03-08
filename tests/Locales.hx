@@ -15,3 +15,7 @@ interface ParentLocale {
 	var getter(get, null):MyLocale;
 	final ultimate:MyLocale;
 }
+
+interface ExtendedLocale extends MyLocale {
+	function extended():String;
+}

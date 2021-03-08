@@ -9,19 +9,19 @@ using tink.MacroApi;
 using StringTools;
 
 class Macro {
-	public static inline function process(type:Type, pos:Position, homogenous = false):LocaleInfo {
-		return processInterface(getInterface(type, pos));
+	public static inline function process(type:Type, pos:Position):LocaleInfo {
+		return processInterface(type, pos);
 	}
 
-	public static function processInterface(cls:ClassType, homogenous = false):LocaleInfo {
+	public static function processInterface(type:Type, pos:Position):LocaleInfo {
+		var cls = getInterface(type, pos);
 		var entries = [];
-
 		var prev = null;
-		for (field in cls.fields.get()) {
+		for (field in type.getFields().sure()) {
 			if (field.meta.has(':compilerGenerated')) // getters/setters
 				continue;
 
-			var kind = switch field.type {
+			var kind = switch field.type.reduce() {
 				case TFun(args, t):
 					if (t.getID() == 'String') {
 						Term(args);
@@ -35,7 +35,7 @@ class Macro {
 					} else if (params.length > 0) {
 						field.pos.error('Paramterized interface is not supported');
 					} else {
-						Sub(getAccess(field), processInterface(cls));
+						Sub(getAccess(field), processInterface(field.type, field.pos));
 					}
 
 				case v:
@@ -53,11 +53,11 @@ class Macro {
 	}
 
 	static function getInterface(type:Type, pos:Position):ClassType {
-		return switch type {
+		return switch type.reduce() {
 			case TInst(_.get() => cls, _) if (cls.isInterface):
 				cls;
 			default:
-				pos.error(type.getID() + ' should be an interface');
+				pos.error(type.getID() + ' should be an interface (${type})');
 		}
 	}
 
