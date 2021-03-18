@@ -124,7 +124,7 @@ abstract Verification(Array<Dynamic>) {
 	inline function get_name()
 		return this[0];
 
-	inline function get_value()
+	inline function get_value():Array<String>
 		return untyped (this[1] || []);
 
 	@:from
