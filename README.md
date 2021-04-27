@@ -64,10 +64,9 @@ class Main {
 		var source = new ResourceStringSource(lang -> '$lang.json');
 		var template = new HaxeTemplate();
 		var loc = new Manager<MyLocale>(new JsonProvider<MyLocale>(source, template));
-		loc.prepare(['en']).handle(function(o) switch o {
-			case Success(_):
+		loc.get('en').handle(function(o) switch o {
+			case Success(localizer):
 				// data prepared, we can now translate something
-				var localizer = loc.language('en');
 				$type(localizer); // MyLocale
 				trace(localizer.hello('World')); // "Hello, World!"
 				trace(localizer.orange(4)); // "There are 4 orange(s)!"
