@@ -11,20 +11,13 @@ using tink.CoreApi;
 
 @:asserts
 class JsonTest {
-	var source:Source<String>;
-	var template:Template;
+	final source:Source<String> = new ResourceStringSource(lang -> '$lang.json');
+	final template:Template = new HaxeTemplate();
 
 	public function new() {}
 
-	@:before
-	public function before() {
-		source = new ResourceStringSource(lang -> '$lang.json');
-		template = new HaxeTemplate();
-		return Noise;
-	}
-
 	public function localize() {
-		var loc = new Manager<MyLocale>(new JsonProvider<MyLocale>(source, template));
+		final loc = new Manager<MyLocale>(new JsonProvider<MyLocale>(source, template));
 		return loc.get('en').next(function(locale) {
 			asserts.assert(locale.empty() == 'Hello, World!');
 			asserts.assert(locale.hello('World') == 'Hello, World!');
@@ -35,18 +28,18 @@ class JsonTest {
 	}
 
 	public function noData() {
-		var loc = new Manager<MyLocale>(new JsonProvider<MyLocale>(source, template));
+		final loc = new Manager<MyLocale>(new JsonProvider<MyLocale>(source, template));
 		return loc.get('dummy').map(function(o) return assert(!o.isSuccess()));
 	}
 
 	public function invalid() {
-		var loc = new Manager<InvalidLocale>(new JsonProvider<InvalidLocale>(source, template));
+		final loc = new Manager<InvalidLocale>(new JsonProvider<InvalidLocale>(source, template));
 		return loc.get('en').map(function(o) return assert(!o.isSuccess()));
 	}
 
 	public function child() {
-		var source = new ResourceStringSource(lang -> 'child-$lang.json');
-		var loc = new Manager<ParentLocale>(new JsonProvider<ParentLocale>(source, template));
+		final source = new ResourceStringSource(lang -> 'child-$lang.json');
+		final loc = new Manager<ParentLocale>(new JsonProvider<ParentLocale>(source, template));
 		return loc.get('en').next(function(en) {
 			function test(loc:MyLocale) {
 				asserts.assert(loc.empty() == 'Hello, World!');
@@ -62,8 +55,8 @@ class JsonTest {
 	}
 
 	public function extended() {
-		var source = new ResourceStringSource(lang -> 'extended-$lang.json');
-		var loc = new Manager<ExtendedLocale>(new JsonProvider<ExtendedLocale>(source, template));
+		final source = new ResourceStringSource(lang -> 'extended-$lang.json');
+		final loc = new Manager<ExtendedLocale>(new JsonProvider<ExtendedLocale>(source, template));
 		return loc.get('en').next(function(locale) {
 			asserts.assert(locale.extended() == 'Extension!');
 			asserts.assert(locale.empty() == 'Hello, World!');

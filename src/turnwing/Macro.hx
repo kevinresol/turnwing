@@ -14,14 +14,14 @@ class Macro {
 	}
 
 	public static function processInterface(type:Type, pos:Position):LocaleInfo {
-		var cls = getInterface(type, pos);
-		var entries = [];
-		var prev = null;
+		final cls = getInterface(type, pos);
+		final entries = [];
+		final prev = null;
 		for (field in type.getFields().sure()) {
 			if (field.meta.has(':compilerGenerated')) // getters/setters
 				continue;
 
-			var kind = switch field.type.reduce() {
+			final kind = switch field.type.reduce() {
 				case TFun(args, t):
 					if (t.getID() == 'String') {
 						Term(args);

@@ -9,11 +9,11 @@ using tink.MacroApi;
 class JsonProvider {
 	public static function build() {
 		return BuildCache.getType('turnwing.provider.JsonProvider', (ctx:BuildContext) -> {
-			var name = ctx.name;
-			var localeCt = ctx.type.toComplex();
-			var dataCt = macro:turnwing.provider.JsonProvider.JsonData<$localeCt>;
+			final name = ctx.name;
+			final localeCt = ctx.type.toComplex();
+			final dataCt = macro:turnwing.provider.JsonProvider.JsonData<$localeCt>;
 
-			var def = macro class $name extends turnwing.provider.JsonProvider.JsonProviderBase<$localeCt, $dataCt> {
+			final def = macro class $name extends turnwing.provider.JsonProvider.JsonProviderBase<$localeCt, $dataCt> {
 				override function parse(v:String)
 					return tink.Json.parse((v : $dataCt));
 
@@ -40,18 +40,18 @@ class JsonProvider {
 class JsonLocale {
 	public static function build() {
 		return BuildCache.getType('turnwing.provider.JsonLocale', (ctx:BuildContext) -> {
-			var name = ctx.name;
-			var localeCt = ctx.type.toComplex();
-			var localeTp = switch localeCt {
+			final name = ctx.name;
+			final localeCt = ctx.type.toComplex();
+			final localeTp = switch localeCt {
 				case TPath(tp): tp;
 				default: throw 'assert';
 			}
-			var dataCt = macro:turnwing.provider.JsonProvider.JsonData<$localeCt>;
+			final dataCt = macro:turnwing.provider.JsonProvider.JsonData<$localeCt>;
 
-			var info = Macro.process(ctx.type, ctx.pos);
-			var inits = [];
+			final info = Macro.process(ctx.type, ctx.pos);
+			final inits = [];
 
-			var def = macro class $name extends turnwing.provider.JsonProvider.JsonLocaleBase<$dataCt> implements $localeTp {
+			final def = macro class $name extends turnwing.provider.JsonProvider.JsonLocaleBase<$dataCt> implements $localeTp {
 				public function new(__template__, __data__) {
 					super(__template__, __data__);
 					@:mergeBlock $b{inits}
@@ -59,13 +59,13 @@ class JsonLocale {
 			} // unbreak haxe-formatter (see: https://github.com/HaxeCheckstyle/haxe-formatter/issues/565)
 
 			for (entry in info.entries) {
-				var name = entry.name;
+				final name = entry.name;
 
 				switch entry.kind {
 					case Term(args):
-						var params = EObjectDecl([for (arg in args) {field: arg.name, expr: macro $i{arg.name}}]).at(entry.pos);
-						var body = macro __template__.execute(__data__.$name, $params);
-						var f = body.func(args.map(a -> a.name.toArg(a.t.toComplex(), a.opt)), macro:String);
+						final params = EObjectDecl([for (arg in args) {field: arg.name, expr: macro $i{arg.name}}]).at(entry.pos);
+						final body = macro __template__.execute(__data__.$name, $params);
+						final f = body.func(args.map(a -> a.name.toArg(a.t.toComplex(), a.opt)), macro:String);
 						def.fields.push({
 							access: [APublic],
 							name: name,
@@ -74,9 +74,9 @@ class JsonLocale {
 						});
 
 					case Sub(access, info):
-						var subLocaleCt = entry.type.toComplex();
-						var factory = macro new turnwing.provider.JsonProvider.JsonLocale<$subLocaleCt>(__template__, __data__.$name);
-						var init = macro $i{name} = $factory;
+						final subLocaleCt = entry.type.toComplex();
+						final factory = macro new turnwing.provider.JsonProvider.JsonLocale<$subLocaleCt>(__template__, __data__.$name);
+						final init = macro $i{name} = $factory;
 
 						switch access {
 							case Default:
@@ -132,10 +132,10 @@ class JsonData {
 	}
 
 	static function getDataFields(type:Type, pos:Position):Array<Field> {
-		var fields:Array<Field> = [];
-		var info = Macro.process(type, pos);
+		final fields:Array<Field> = [];
+		final info = Macro.process(type, pos);
 		for (entry in info.entries) {
-			var ct = entry.type.toComplex();
+			final ct = entry.type.toComplex();
 			fields.push({
 				name: entry.name,
 				pos: entry.pos,

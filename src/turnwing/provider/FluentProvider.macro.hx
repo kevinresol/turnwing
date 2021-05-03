@@ -10,19 +10,19 @@ using tink.MacroApi;
 class FluentProvider {
 	public static function build() {
 		return BuildCache.getType('turnwing.provider.FluentProvider', (ctx:BuildContext) -> {
-			var name = ctx.name;
-			var localeCt = ctx.type.toComplex();
+			final name = ctx.name;
+			final localeCt = ctx.type.toComplex();
 
-			var validations = [];
+			final validations = [];
 
 			function generate(info:turnwing.Macro.LocaleInfo, prefix:Prefix) {
 				for (entry in info.entries) {
-					var fullname = prefix.add(entry.name, '-');
+					final fullname = prefix.add(entry.name, '-');
 					switch entry.kind {
 						case Term([]):
 							validations.push(macro turnwing.provider.FluentProvider.Verification.nameOnly($v{fullname}));
 						case Term(args):
-							var variables = macro $a{args.map(arg -> macro $v{arg.name})};
+							final variables = macro $a{args.map(arg -> macro $v{arg.name})};
 							validations.push(macro new turnwing.provider.FluentProvider.Verification($v{fullname}, $variables));
 						case Sub(_, info):
 							generate(info, fullname);
@@ -32,9 +32,9 @@ class FluentProvider {
 
 			generate(Macro.process(ctx.type, ctx.pos), new Prefix());
 
-			var def = macro class $name extends turnwing.provider.FluentProvider.FluentProviderBase<$localeCt> {
+			final def = macro class $name extends turnwing.provider.FluentProvider.FluentProviderBase<$localeCt> {
 				override function validate(bundle:turnwing.provider.FluentProvider.FluentBundle) {
-					var validations = $a{validations};
+					final validations = $a{validations};
 					for (v in validations)
 						switch validateMessage(bundle, v.name, v.value) {
 							case Some(error):
@@ -62,17 +62,17 @@ class FluentProvider {
 class FluentLocale {
 	public static function build() {
 		return BuildCache.getType('turnwing.provider.FluentLocale', (ctx:BuildContext) -> {
-			var name = ctx.name;
-			var localeCt = ctx.type.toComplex();
-			var localeTp = switch localeCt {
+			final name = ctx.name;
+			final localeCt = ctx.type.toComplex();
+			final localeTp = switch localeCt {
 				case TPath(tp): tp;
 				default: throw 'assert';
 			}
 
-			var info = Macro.process(ctx.type, ctx.pos);
-			var inits = [];
+			final info = Macro.process(ctx.type, ctx.pos);
+			final inits = [];
 
-			var def = macro class $name extends turnwing.provider.FluentProvider.FluentLocaleBase implements $localeTp {
+			final def = macro class $name extends turnwing.provider.FluentProvider.FluentLocaleBase implements $localeTp {
 				public function new(__bundle__, __prefix__) {
 					super(__bundle__, __prefix__);
 					@:mergeBlock $b{inits}
@@ -80,14 +80,14 @@ class FluentLocale {
 			} // unbreak haxe-formatter (see: https://github.com/HaxeCheckstyle/haxe-formatter/issues/565)
 
 			for (entry in info.entries) {
-				var name = entry.name;
+				final name = entry.name;
 
 				switch entry.kind {
 					case Term(args):
-						var params = EObjectDecl([for (arg in args) {field: arg.name, expr: macro $i{arg.name}}]).at(entry.pos);
-						var body = macro __exec__($v{entry.name}, $params);
+						final params = EObjectDecl([for (arg in args) {field: arg.name, expr: macro $i{arg.name}}]).at(entry.pos);
+						final body = macro __exec__($v{entry.name}, $params);
 
-						var f = body.func(args.map(a -> a.name.toArg(a.t.toComplex(), a.opt)), macro:String);
+						final f = body.func(args.map(a -> a.name.toArg(a.t.toComplex(), a.opt)), macro:String);
 						def.fields.push({
 							access: [APublic],
 							name: name,
@@ -96,9 +96,9 @@ class FluentLocale {
 						});
 
 					case Sub(access, info):
-						var subLocaleCt = entry.type.toComplex();
-						var factory = macro new turnwing.provider.FluentProvider.FluentLocale<$subLocaleCt>(__bundle__, __prefix__.add($v{entry.name}, '-'));
-						var init = macro $i{name} = $factory;
+						final subLocaleCt = entry.type.toComplex();
+						final factory = macro new turnwing.provider.FluentProvider.FluentLocale<$subLocaleCt>(__bundle__, __prefix__.add($v{entry.name}, '-'));
+						final init = macro $i{name} = $factory;
 
 						switch access {
 							case Default:

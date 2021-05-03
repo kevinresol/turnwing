@@ -39,8 +39,8 @@ class FluentProviderBase<Locale> implements Provider<Locale> {
 		return if (ftl == null) {
 			Failure(new Error('Empty ftl data'));
 		} else {
-			var resource = new FluentResource(ftl);
-			var bundle = new FluentBundle(language, opt);
+			final resource = new FluentResource(ftl);
+			final bundle = new FluentBundle(language, opt);
 			bundle.addResource(resource);
 			validate(bundle);
 		}
@@ -66,25 +66,25 @@ class FluentProviderBase<Locale> implements Provider<Locale> {
 				switch (element : Expression).type {
 					case null: // plain String
 					case 'select':
-						var select:SelectExpression = cast element;
+						final select:SelectExpression = cast element;
 					case 'var':
-						var variable:VariableReference = cast element;
+						final variable:VariableReference = cast element;
 						if (suppliedVariables.indexOf(variable.name) == -1)
 							return Some(new Error('Superfluous variable "${variable.name}". (Not provided in the Locale interface)'));
 					case 'term':
-						var term:TermReference = cast element;
+						final term:TermReference = cast element;
 						if (!bundle._terms.has('-' + term.name))
 							return Some(new Error('Term "${term.name}" does not exist. (Required by $location)'));
 					case 'mesg':
-						var message:MessageReference = cast element;
+						final message:MessageReference = cast element;
 					case 'func':
-						var func:FunctionReference = cast element;
+						final func:FunctionReference = cast element;
 					case 'narg':
-						var narg:NamedArgument = cast element;
+						final narg:NamedArgument = cast element;
 					case 'str':
-						var str:StringLiteral = cast element;
+						final str:StringLiteral = cast element;
 					case 'num':
-						var num:NumberLiteral = cast element;
+						final num:NumberLiteral = cast element;
 				}
 		}
 		return None;
@@ -139,8 +139,8 @@ abstract Verification(Array<Dynamic>) {
 
 @:jsRequire('@fluent/bundle', 'FluentBundle')
 extern class FluentBundle {
-	var _terms:js.lib.Map<String, Term>;
-	var _messages:js.lib.Map<String, Message>;
+	final _terms:js.lib.Map<String, Term>;
+	final _messages:js.lib.Map<String, Message>;
 
 	function new(lang:String, ?opts:{});
 	function addResource(res:FluentResource):Array<js.lib.Error>;
