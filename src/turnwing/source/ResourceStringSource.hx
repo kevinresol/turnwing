@@ -10,7 +10,7 @@ class ResourceStringSource implements Source<String> {
 
 	public function fetch(language:String):Promise<String> {
 		final name = getResourceName(language);
-		return Error.catchExceptions(function() return switch haxe.Resource.getString(name) {
+		return Error.catchExceptions(() -> switch haxe.Resource.getString(name) {
 			case null: throw new Error(NotFound, 'No resource named "$name"');
 			case v: v;
 		});

@@ -17,29 +17,29 @@ class FluentTest {
 
 	public function localize() {
 		final loc = new Manager<MyLocale>(new FluentProvider<MyLocale>(source, {useIsolating: false}));
-		return loc.get('en').next(function(locale) {
+		return loc.get('en').next(locale -> {
 			asserts.assert(locale.empty() == 'Hello, World!');
 			asserts.assert(locale.hello('World') == 'Hello, World!');
 			asserts.assert(locale.bool(true) == 'Yes');
 			asserts.assert(locale.bool(false) == 'No');
-			return asserts.done();
+			asserts.done();
 		});
 	}
 
 	public function noData() {
 		final loc = new Manager<MyLocale>(new FluentProvider<MyLocale>(source, {useIsolating: false}));
-		return loc.get('dummy').map(function(o) return assert(!o.isSuccess()));
+		return loc.get('dummy').map(o -> assert(!o.isSuccess()));
 	}
 
 	public function invalid() {
 		final loc = new Manager<InvalidLocale>(new FluentProvider<InvalidLocale>(source, {useIsolating: false}));
-		return loc.get('en').map(function(o) return assert(!o.isSuccess()));
+		return loc.get('en').map(o -> assert(!o.isSuccess()));
 	}
 
 	public function child() {
 		final source = new ResourceStringSource(lang -> 'child-$lang.ftl');
 		final loc = new Manager<ParentLocale>(new FluentProvider<ParentLocale>(source, {useIsolating: false}));
-		return loc.get('en').next(function(en) {
+		return loc.get('en').next(en -> {
 			function test(loc:MyLocale) {
 				asserts.assert(loc.empty() == 'Hello, World!');
 				asserts.assert(loc.hello('World') == 'Hello, World!');
@@ -49,7 +49,7 @@ class FluentTest {
 			test(en.normal);
 			test(en.getter);
 			test(en.ultimate);
-			return asserts.done();
+			asserts.done();
 		});
 	}
 }
