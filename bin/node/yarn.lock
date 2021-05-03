@@ -6,3 +6,8 @@
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/@fluent/bundle/-/bundle-0.15.0.tgz#c123ea08d066d8b987eae5ceaa6632451609efaf"
   integrity sha512-pYz+TuFPwCj5yx51mFG1flPxwTaXWkpi6yt6r+rdm22Y9bkWMHWdwbUnjWLJ+9yJKQMhe2uhvMJ7YfhkF87oNg==
+
+"@fluent/syntax@^0.17.0":
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/@fluent/syntax/-/syntax-0.17.0.tgz#3e6385c44bda2a44a68b83a1efbadc1a134e9805"
+  integrity sha512-fgJNUZRBk/n5MO5AxZ7Vvv8aCzMF6NanGBS1GFR2HG2lnsGqHLAe9OeHpyg+FkKfP5SvOtbyk3Nkza5iIwN/Ug==

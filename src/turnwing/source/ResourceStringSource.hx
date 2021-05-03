@@ -3,12 +3,10 @@ package turnwing.source;
 import turnwing.source.Source;
 
 class ResourceStringSource implements Source<String> {
-	public function new(?getResourceName:String->String)
-		if (getResourceName != null)
-			this.getResourceName = getResourceName;
+	final getResourceName:(lang:String) -> String;
 
-	dynamic function getResourceName(lang:String):String
-		return lang;
+	public function new(getResourceName)
+		this.getResourceName = getResourceName;
 
 	public function fetch(language:String):Promise<String> {
 		var name = getResourceName(language);

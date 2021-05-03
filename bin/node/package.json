@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@fluent/bundle": "^0.15.0"
+    "@fluent/bundle": "^0.15.0",
+    "@fluent/syntax": "^0.17.0"
   }
 }

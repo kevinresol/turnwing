@@ -3,7 +3,7 @@ package turnwing.source;
 import turnwing.source.Source;
 
 class WebStringSource implements Source<String> {
-	var getUrl:(lang:String) -> String;
+	final getUrl:(lang:String) -> String;
 
 	public function new(getUrl)
 		this.getUrl = getUrl;
