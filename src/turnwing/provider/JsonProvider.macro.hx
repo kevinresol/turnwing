@@ -120,14 +120,12 @@ class JsonLocale {
 
 class JsonData {
 	public static function build() {
-		return BuildCache.getType('turnwing.provider.JsonData', function(ctx:BuildContext) {
-			return {
-				fields: getDataFields(ctx.type, ctx.pos),
-				name: ctx.name,
-				pack: ['turnwing', 'provider'],
-				pos: ctx.pos,
-				kind: TDStructure,
-			}
+		return BuildCache.getType('turnwing.provider.JsonData', (ctx:BuildContext) -> {
+			fields: getDataFields(ctx.type, ctx.pos),
+			name: ctx.name,
+			pack: ['turnwing', 'provider'],
+			pos: ctx.pos,
+			kind: TDStructure,
 		});
 	}
 
