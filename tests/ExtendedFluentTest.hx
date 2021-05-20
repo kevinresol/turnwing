@@ -84,8 +84,8 @@ class LocalStringSource implements Source<String> {
 		'multi/zh.ftl' => '# @include ../baz\n# @include ../baz1\nmulti = Multi',
 		'transitive/en.ftl' => '# @include ../baz',
 		'transitive/zh.ftl' => '# @include ../baz',
-		'duplicate/en.ftl' => '# @include ../foo\n# @include ../baz',
-		'duplicate/zh.ftl' => '# @include ../foo\n# @include ../baz',
+		'duplicate/en.ftl' => '# @include ../transitive\n# @include ../foo\n# @include ../baz',
+		'duplicate/zh.ftl' => '# @include ../transitive\n# @include ../foo\n# @include ../baz',
 	];
 	// @formatter:on
 	final getPath:String->String;
