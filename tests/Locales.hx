@@ -13,7 +13,7 @@ interface InvalidLocale { // test invalid source
 interface ParentLocale {
 	var normal(default, null):MyLocale;
 	var getter(get, null):MyLocale;
-	final ultimate:MyLocale;
+	final const:MyLocale;
 }
 
 interface ExtendedLocale extends MyLocale {

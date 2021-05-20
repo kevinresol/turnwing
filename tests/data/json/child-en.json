@@ -9,7 +9,7 @@
 		"empty": "Hello, World!",
 		"bool": "::if value::Yes::else::No::end::"
 	},
-	"ultimate": {
+	"const": {
 		"hello": "Hello, ::name::!",
 		"empty": "Hello, World!",
 		"bool": "::if value::Yes::else::No::end::"

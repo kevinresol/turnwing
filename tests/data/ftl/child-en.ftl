@@ -14,9 +14,9 @@ getter-bool =
        *[1] Yes
     }
 
-ultimate-hello = Hello, { $name }!
-ultimate-empty = Hello, World!
-ultimate-bool =
+const-hello = Hello, { $name }!
+const-empty = Hello, World!
+const-bool =
     { $value -> 
         [0] No
        *[1] Yes

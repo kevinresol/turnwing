@@ -48,7 +48,7 @@ class FluentTest {
 			}
 			test(en.normal);
 			test(en.getter);
-			test(en.ultimate);
+			test(en.const);
 			asserts.done();
 		});
 	}

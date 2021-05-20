@@ -49,7 +49,11 @@ class Macro {
 				kind: kind,
 			});
 		}
-		return {type: cls, entries: entries};
+		return {
+			type: cls, 
+			complex: type.toComplex(),
+			entries: entries,
+		};
 	}
 
 	static function getInterface(type:Type, pos:Position):ClassType {
@@ -75,6 +79,7 @@ class Macro {
 
 typedef LocaleInfo = {
 	type:ClassType,
+	complex:ComplexType,
 	entries:Array<LocaleEntry>,
 }
 
