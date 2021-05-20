@@ -27,15 +27,15 @@ class ExtendedFluentSource implements Source<String> {
 	}
 
 	public function fetch(language:String):Promise<String> {
-		return load(path, language, []);
+		return load(path, language, [], []);
 	}
 
-	function load(path:String, lang:String, prefixes:Array<String>):Promise<String> {
+	function load(path:String, lang:String, prefixes:Array<String>, rootIncludes:Array<String>):Promise<String> {
 		final source = getSource(language -> path.endsWith('.ftl') ? path : Path.join([path, '$language.ftl']));
-		return source.fetch(lang).next(src -> follow(src, path, lang, prefixes));
+		return source.fetch(lang).next(src -> follow(src, path, lang, prefixes, rootIncludes));
 	}
 
-	function follow(source:String, path:String, lang:String, prefixes:Array<String>) {
+	function follow(source:String, path:String, lang:String, prefixes:Array<String>, rootIncludes:Array<String>) {
 		final regex = ~/^# @include ([^ ]+)( into (\w+))?$/;
 		final promises = [];
 
@@ -52,13 +52,19 @@ class ExtendedFluentSource implements Source<String> {
 
 				final newPrefixes = switch regex.matched(3) {
 					case null:
+						switch rootIncludes.indexOf(rel) {
+							case -1:
+								rootIncludes.push(rel);
+							case i: // already included
+								return true;
+						}
 						prefixes;
 					case prefix:
 						prefixes.concat([prefix]);
 				}
 
 				final sections = [path.endsWith('.ftl') ? path.directory() : path, rel];
-				promises.push(load(Path.join(sections).normalize(), lang, prefixes).next(appendPrefixes.bind(_, newPrefixes)));
+				promises.push(load(Path.join(sections).normalize(), lang, prefixes, rootIncludes).next(appendPrefixes.bind(_, newPrefixes)));
 			}
 			return matched;
 		}

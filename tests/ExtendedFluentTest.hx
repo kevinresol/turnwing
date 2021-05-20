@@ -32,7 +32,7 @@ class ExtendedFluentTest {
 	@:variant('deep', 'zh', ['deep-' + ExtendedFluentTest.BAR_ZH, 'deep-' + ExtendedFluentTest.PREFIX + '-' + ExtendedFluentTest.BAZ_ZH])
 	@:variant('multi', 'zh', [ExtendedFluentTest.BAZ_ZH, ExtendedFluentTest.BAZ1_ZH])
 	// @formatter:on
-	public function test(name:String, lang:String, expected:Array<String>) {
+	public function basic(name:String, lang:String, expected:Array<String>) {
 		final source = new ExtendedFluentSource(name, LocalStringSource.new);
 		source.fetch(lang).next(source -> {
 			final lines = source.split('\n');
@@ -41,6 +41,29 @@ class ExtendedFluentTest {
 			Noise;
 		}).handle(asserts.handle);
 		return asserts;
+	}
+
+	public function duplicate() {
+		final source = new ExtendedFluentSource('duplicate', LocalStringSource.new);
+		source.fetch('en').next(source -> {
+			asserts.assert(occurrence(source, BAZ_EN) == 1);
+			Noise;
+		}).handle(asserts.handle);
+		return asserts;
+	}
+
+	static function occurrence(source:String, query:String) {
+		var start = 0;
+		var count = 0;
+		while (true) {
+			switch source.indexOf(query, start) {
+				case -1:
+					return count;
+				case i:
+					count++;
+					start = i + query.length;
+			}
+		}
 	}
 }
 
@@ -59,6 +82,10 @@ class LocalStringSource implements Source<String> {
 		'deep/zh.ftl' => '# @include ../bar into deep',
 		'multi/en.ftl' => '# @include ../baz\n# @include ../baz1\nmulti = Multi',
 		'multi/zh.ftl' => '# @include ../baz\n# @include ../baz1\nmulti = Multi',
+		'transitive/en.ftl' => '# @include ../baz',
+		'transitive/zh.ftl' => '# @include ../baz',
+		'duplicate/en.ftl' => '# @include ../foo\n# @include ../baz',
+		'duplicate/zh.ftl' => '# @include ../foo\n# @include ../baz',
 	];
 	// @formatter:on
 	final getPath:String->String;
