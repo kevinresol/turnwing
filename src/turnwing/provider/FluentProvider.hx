@@ -39,23 +39,21 @@ class FluentProviderBase<Locale> implements Provider<Locale> {
 		return if (ftl == null) {
 			Failure(new Error('Empty ftl data'));
 		} else {
-			final resource = new FluentResource(ftl);
-			final bundle = new FluentBundle(language, opt);
-			bundle.addResource(resource);
-			validate(bundle);
+			final ctx = new FluentContext(ftl, language, opt);
+			validate(ctx);
 		}
 	}
 
-	function validate(bundle:FluentBundle):Outcome<FluentBundle, Error>
+	function validate(ctx:FluentContext):Outcome<FluentBundle, Error>
 		throw 'abstract';
 
 	// note: suppliedVariables is the list of argument names specified in the Locale interface
-	function validateMessage(bundle:FluentBundle, id:String, suppliedVariables:Array<String>):Option<Error> {
-		return switch bundle.getMessage(id) {
+	function validateMessage(ctx:FluentContext, id:String, suppliedVariables:Array<String>):Option<Error> {
+		return switch ctx.bundle.getMessage(id) {
 			case null:
-				Some(new Error('Missing Message "$id"'));
+				Some(Error.withData('Missing Message "$id"', {source: ctx.source}));
 			case message:
-				validatePattern(bundle, message.value, 'Message "$id"', suppliedVariables);
+				validatePattern(ctx.bundle, message.value, 'Message "$id"', suppliedVariables);
 		}
 	}
 
@@ -92,6 +90,19 @@ class FluentProviderBase<Locale> implements Provider<Locale> {
 
 	function make(bundle:FluentBundle):Locale
 		throw 'abstract';
+}
+
+class FluentContext {
+	public final source:String;
+	public final resource:FluentResource;
+	public final bundle:FluentBundle;
+	
+	public function new(ftl, language, opt) {
+		source = ftl;
+		resource = new FluentResource(ftl);
+		bundle = new FluentBundle(language, opt);
+		bundle.addResource(resource);
+	}
 }
 
 class FluentLocaleBase {

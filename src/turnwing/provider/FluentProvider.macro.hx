@@ -33,15 +33,15 @@ class FluentProvider {
 			generate(Macro.process(ctx.type, ctx.pos), new Prefix());
 
 			final def = macro class $name extends turnwing.provider.FluentProvider.FluentProviderBase<$localeCt> {
-				override function validate(bundle:turnwing.provider.FluentProvider.FluentBundle) {
+				override function validate(ctx:turnwing.provider.FluentProvider.FluentContext) {
 					final validations = $a{validations};
 					for (v in validations)
-						switch validateMessage(bundle, v.name, v.value) {
+						switch validateMessage(ctx, v.name, v.value) {
 							case Some(error):
 								return tink.core.Outcome.Failure(error);
 							case None: // ok
 						}
-					return tink.core.Outcome.Success(bundle);
+					return tink.core.Outcome.Success(ctx.bundle);
 				}
 
 				override function make(bundle:turnwing.provider.FluentProvider.FluentBundle):$localeCt
