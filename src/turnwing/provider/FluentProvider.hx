@@ -53,12 +53,12 @@ class FluentProviderBase<Locale> implements Provider<Locale> {
 			case null:
 				Some(ctx.makeError('Missing Message "$id"'));
 			case message:
-				validatePattern(ctx, message.value, 'Message "$id"', suppliedVariables);
+				validatePattern(ctx, message.value, 'Message "$id"', suppliedVariables, true);
 		}
 	}
 
 	// TODO: complete the validation (rescusively)
-	function validatePattern(ctx:FluentContext, pattern:Pattern, location:String, suppliedVariables:Array<String>):Option<Error> {
+	function validatePattern(ctx:FluentContext, pattern:Pattern, location:String, suppliedVariables:Array<String>, root = false):Option<Error> {
 		if (Std.is(pattern, Array)) {
 			for (element in (pattern : Array<PatternElement>))
 				switch (element : Expression).type {
@@ -66,10 +66,12 @@ class FluentProviderBase<Locale> implements Provider<Locale> {
 					case 'select':
 						final select:SelectExpression = cast element;
 
-						switch validatePattern(ctx, [select.selector], location, suppliedVariables) {
-							case Some(e): return Some(e);
-							case None: // continue
-						}
+						// skip check var because terms (and such) may define its own var
+						if(root || select.selector.type != 'var')
+							switch validatePattern(ctx, [select.selector], location, suppliedVariables) {
+								case Some(e): return Some(e);
+								case None: // continue
+							}
 
 						final name = switch exprToSyntax(select.selector) {
 							case null: 'selector';
