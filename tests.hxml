@@ -11,3 +11,7 @@
 -resource tests/data/json/extended-en.json@extended-en.json
 -resource tests/data/ftl/child-en.ftl@child-en.ftl
 -resource tests/data/ftl/en.ftl@en.ftl
+-resource tests/data/ftl/validation1-en.ftl@validation1-en.ftl
+-resource tests/data/ftl/validation2-en.ftl@validation2-en.ftl
+-resource tests/data/ftl/validation3-en.ftl@validation3-en.ftl
+-resource tests/data/ftl/validation4-en.ftl@validation4-en.ftl

@@ -52,4 +52,21 @@ class FluentTest {
 			asserts.done();
 		});
 	}
+
+	@:variant(1)
+	@:variant(2)
+	@:variant(3)
+	@:variant(4)
+	public function validation(i:Int) {
+		final source = new ResourceStringSource(lang -> 'validation$i-$lang.ftl');
+		final loc = new Manager<MyLocale>(new FluentProvider<MyLocale>(source, {useIsolating: false}));
+		return loc.get('en').map(o -> switch o {
+			case Success(loc):
+				asserts.fail('Expected failure');
+			case Failure(e):
+				// trace(e.message);
+				asserts.assert(true, 'Expected failure');
+				asserts.done();
+		});
+	}
 }

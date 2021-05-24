@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@fluent/bundle@^0.15.0":
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/@fluent/bundle/-/bundle-0.15.0.tgz#c123ea08d066d8b987eae5ceaa6632451609efaf"
-  integrity sha512-pYz+TuFPwCj5yx51mFG1flPxwTaXWkpi6yt6r+rdm22Y9bkWMHWdwbUnjWLJ+9yJKQMhe2uhvMJ7YfhkF87oNg==
+"@fluent/bundle@^0.16.1":
+  version "0.16.1"
+  resolved "https://registry.yarnpkg.com/@fluent/bundle/-/bundle-0.16.1.tgz#2d359eb2eca4c6053335258f6d3e1025f3fd3b1d"
+  integrity sha512-l/y8uvAC1vAIEGXfbt97g36s9gJ6wdEFRWCJo4vtoxD1e210MxBAXfLhU+wfzaatlxwh+HjJ15G41ee6V8Y4ww==
 
 "@fluent/syntax@^0.17.0":
   version "0.17.0"

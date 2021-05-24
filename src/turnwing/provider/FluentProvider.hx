@@ -24,7 +24,7 @@ class FluentLocale<Locale> {}
 
 class FluentProviderBase<Locale> implements Provider<Locale> {
 	final source:Source<String>;
-	final opt:{?useIsolating: Bool};
+	final opt:{?useIsolating:Bool};
 
 	public function new(source, ?opt) {
 		this.source = source;
@@ -65,6 +65,22 @@ class FluentProviderBase<Locale> implements Provider<Locale> {
 					case null: // plain String
 					case 'select':
 						final select:SelectExpression = cast element;
+
+						switch validatePattern(ctx, [select.selector], location, suppliedVariables) {
+							case Some(e): return Some(e);
+							case None: // continue
+						}
+
+						final name = switch exprToSyntax(select.selector) {
+							case null: 'selector';
+							case v: v;
+						}
+
+						for (v in select.variants)
+							switch validatePattern(ctx, v.value, '$location : $name -> [${exprToSyntax(v.key)}]', suppliedVariables) {
+								case Some(e): return Some(e);
+								case None: // continue
+							}
 					case 'var':
 						final variable:VariableReference = cast element;
 						if (suppliedVariables.indexOf(variable.name) == -1)
@@ -88,6 +104,28 @@ class FluentProviderBase<Locale> implements Provider<Locale> {
 		return None;
 	}
 
+	static function exprToSyntax(e:Expression) {
+		return switch e.type {
+			case 'var':
+				final variable:VariableReference = cast e;
+				'$' + variable.name;
+			case 'term':
+				final term:TermReference = cast e;
+				'-' + term.name;
+			case 'mesg':
+				final message:MessageReference = cast e;
+				message.name;
+			case 'str':
+				final str:StringLiteral = cast e;
+				str.value;
+			case 'num':
+				final num:NumberLiteral = cast e;
+				num.value + '';
+			case _:
+				null;
+		}
+	}
+
 	function make(bundle:FluentBundle):Locale
 		throw 'abstract';
 }
@@ -96,14 +134,14 @@ class FluentContext {
 	public final source:String;
 	public final resource:FluentResource;
 	public final bundle:FluentBundle;
-	
+
 	public function new(ftl, language, opt) {
 		source = ftl;
 		resource = new FluentResource(ftl);
 		bundle = new FluentBundle(language, opt);
 		bundle.addResource(resource);
 	}
-	
+
 	public inline function makeError(message:String) {
 		return Error.withData(message, {source: source});
 	}
@@ -121,10 +159,10 @@ class FluentLocaleBase {
 	function __exec__(id:String, params:Dynamic) {
 		return __bundle__.formatPattern(__bundle__.getMessage(__prefix__.add(id, '-')).value, __sanitize__(params));
 	}
-	
+
 	function __sanitize__(params:DynamicAccess<Dynamic>) {
 		final ret = new DynamicAccess<Dynamic>();
-		for(field => value in params) {
+		for (field => value in params) {
 			// Fluent does not support boolean param, we change it to 0/1
 			ret[field] = Type.typeof(value) == TBool ? (value ? 1 : 0) : value;
 		}
@@ -168,6 +206,7 @@ extern class FluentResource {
 	function new(ftl:String);
 }
 
+// https://github.com/projectfluent/fluent.js/blob/%40fluent%2Fbundle%400.16.1/fluent-bundle/src/ast.ts
 typedef Message = {
 	id:String,
 	value:Pattern,
@@ -212,6 +251,7 @@ typedef FunctionReference = Expression & {
 };
 
 typedef Variant = Expression & {
+	key:Literal,
 	value:Pattern,
 }
 
