@@ -51,14 +51,14 @@ class FluentProviderBase<Locale> implements Provider<Locale> {
 	function validateMessage(ctx:FluentContext, id:String, suppliedVariables:Array<String>):Option<Error> {
 		return switch ctx.bundle.getMessage(id) {
 			case null:
-				Some(Error.withData('Missing Message "$id"', {source: ctx.source}));
+				Some(ctx.makeError('Missing Message "$id"'));
 			case message:
-				validatePattern(ctx.bundle, message.value, 'Message "$id"', suppliedVariables);
+				validatePattern(ctx, message.value, 'Message "$id"', suppliedVariables);
 		}
 	}
 
 	// TODO: complete the validation (rescusively)
-	function validatePattern(bundle:FluentBundle, pattern:Pattern, location:String, suppliedVariables:Array<String>):Option<Error> {
+	function validatePattern(ctx:FluentContext, pattern:Pattern, location:String, suppliedVariables:Array<String>):Option<Error> {
 		if (Std.is(pattern, Array)) {
 			for (element in (pattern : Array<PatternElement>))
 				switch (element : Expression).type {
@@ -68,11 +68,11 @@ class FluentProviderBase<Locale> implements Provider<Locale> {
 					case 'var':
 						final variable:VariableReference = cast element;
 						if (suppliedVariables.indexOf(variable.name) == -1)
-							return Some(new Error('Superfluous variable "${variable.name}". (Not provided in the Locale interface)'));
+							return Some(ctx.makeError('Superfluous variable "${variable.name}". (Not provided in the Locale interface)'));
 					case 'term':
 						final term:TermReference = cast element;
-						if (!bundle._terms.has('-' + term.name))
-							return Some(new Error('Term "${term.name}" does not exist. (Required by $location)'));
+						if (!ctx.bundle._terms.has('-' + term.name))
+							return Some(ctx.makeError('Term "${term.name}" does not exist. (Required by $location)'));
 					case 'mesg':
 						final message:MessageReference = cast element;
 					case 'func':
@@ -102,6 +102,10 @@ class FluentContext {
 		resource = new FluentResource(ftl);
 		bundle = new FluentBundle(language, opt);
 		bundle.addResource(resource);
+	}
+	
+	public inline function makeError(message:String) {
+		return Error.withData(message, {source: source});
 	}
 }
 
