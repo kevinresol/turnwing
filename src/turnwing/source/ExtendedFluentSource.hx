@@ -43,6 +43,8 @@ class ExtendedFluentSource implements Source<String> {
 		var end = 0;
 
 		function add(s, ?e) {
+			if (e == null)
+				e = source.length; // This is necessary because substring(s, null) gives empty string, but substring(s, undefined) will give the full string. Thank you, js 🎉
 			final sub = source.substring(s, e).trim();
 			final matched = regex.match(sub);
 			if (matched) {
